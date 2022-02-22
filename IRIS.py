@@ -5,7 +5,6 @@ import speech_recognition as sr
 import wikipedia
 import os
 import random
-import sys
 import json
 import requests
 import smtplib
@@ -27,11 +26,16 @@ from pywikihow import search_wikihow
 import pyjokes
 from tkinter import *
 from tkinter import filedialog
+# import win32gui, win32con
+#
+#
+# hide = win32gui.GetForegroundWindow()
+# win32gui.ShowWindow(hide, win32con.SW_HIDE)
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[0].id)
-engine.setProperty('rate', 180)
+engine.setProperty('voice', voices[1].id)
+engine.setProperty('rate', 220)
 
 '''--------------------------------------------------------------------------------------------------------------------
 --------------------------------------------Functions for executing tasks----------------------------------------------
@@ -74,6 +78,33 @@ iris_task_set = {"Search on Google -> To Search on google \n", "Open Notepad -> 
                  "About You -> To know About Me(IRIS)\n",
                  "Change Language -> To Change Language(currently supported languages:English/हिंदी)\n",
                  "Sleep -> To Exit "}
+
+
+def label_setter(argument1):
+    if len(argument1) >= 500:
+        iris_says.set(f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:250]}\n {argument1[250:300]}\n {argument1[300:350]}\n {argument1[350:400]}\n {argument1[400:450]}")
+    elif len(argument1) >= 450:
+        iris_says.set(f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:250]}\n {argument1[250:300]}\n {argument1[300:350]}\n {argument1[350:400]}\n {argument1[400:450]}")
+    elif len(argument1) >= 400:
+        iris_says.set(f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:250]}\n {argument1[250:300]}\n {argument1[300:350]}\n {argument1[350:400]}\n {argument1[400:len(argument1)]}")
+    elif len(argument1) >= 350:
+        iris_says.set(f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:250]}\n {argument1[250:300]}\n {argument1[300:350]}\n {argument1[350:len(argument1)]}")
+    elif len(argument1) >= 300:
+        iris_says.set(f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:250]}\n {argument1[250:300]}\n {argument1[300:len(argument1)]}")
+    elif len(argument1) >= 250:
+        iris_says.set(f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:250]}\n {argument1[250:len(argument1)]}")
+    elif len(argument1) >= 200:
+        iris_says.set(f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:len(argument1)]}")
+    elif len(argument1) >= 150:
+        iris_says.set(f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:len(argument1)]}")
+    elif len(argument1) >= 100:
+        iris_says.set(f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:len(argument1)]}")
+    elif len(argument1) >= 50:
+        iris_says.set(f"{argument1[0:50]}\n {argument1[50:len(argument1)]}")
+    else:
+        iris_says.set(f"{argument1[0:len(argument1)]}")
+
+    window.update()
 
 
 def about_me():
@@ -462,7 +493,7 @@ def search_on_google():
                 how_to_func = search_wikihow(query=search, max_results=max_result)
                 assert len(how_to_func) == 1
                 how_to_func[0].print()
-                iris_says.set(how_to_func[0].summary)
+                iris_says.set("")
                 window.update()
                 speak(how_to_func[0].summary)
             except:
@@ -472,7 +503,7 @@ def search_on_google():
             try:
                 search = wikipedia.summary(search, 2)
                 print(search)
-                iris_says.set(f": According to Google : {search}")
+                label_setter(search)
                 window.update()
                 speak(f": According to Google : {search}")
             except:
@@ -492,7 +523,7 @@ def open_notepad():
 def play_music():
     """Plays random music(.mp3) from directory given by user"""
     try:
-        iris_says.set("Enter directory from which you want to play random\nsong")
+        iris_says.set("Enter directory from which you want to play \nRandom song")
         window.update()
         speak("Enter directory from which you want to play random song")
         music_dir = filedialog.askdirectory()
@@ -528,7 +559,8 @@ def speak_news():
         results = []
         for ar in article:
             results.append(ar['title'])
-            iris_says.set(ar['title'])
+            print(len(ar['title']))
+            label_setter(ar['title'].lower())
             window.update()
             speak(ar['title'])
             if len(results) == 5:
@@ -570,7 +602,7 @@ def email_with_file():
     iris_says.set("Sir, please enter correct path of the file")
     window.update()
     speak("Sir, please enter correct path of the file")
-    file = input("Input path here: ")
+    file = filedialog.askopenfilename()
     selected_email = select_email(name)
     selected_email_name = select_email_name(name)
     if name in selected_email_name:
@@ -704,7 +736,7 @@ def one_random_joke():
     """Tells one random joke"""
     joke = pyjokes.get_joke(language="en", category="all")
     print(joke)
-    iris_says.set(joke)
+    label_setter(joke)
     window.update()
     speak(joke)
 
@@ -715,7 +747,7 @@ def inspire_me():
     json_data = json.loads(response.text)
     quote = "\"" + json_data[0]['q'] + "\"" + " - " + json_data[0]['a']
     print(quote)
-    iris_says.set(quote)
+    label_setter(quote)
     window.update()
     speak(quote)
 
@@ -736,7 +768,7 @@ def location_finder():
         city = result['city']
         state = result['state']
         print(f"sir we are in {city} city, {state} state and {country} country")
-        iris_says.set(f"sir we are in {city} city, {state} state and {country} country")
+        iris_says.set(f"sir we are in {city} city,{state} state and \n{country} country")
         window.update()
         speak(f"sir we are in {city} city, {state} state and {country} country")
     except:
@@ -751,7 +783,7 @@ def screenshot():
     window.update()
     speak("Please tell me name for this screenshot")
     name = take_cmd().lower()
-    iris_says.set("Sir please hold screen for few second I am taking screenshot")
+    iris_says.set("Sir please hold screen for few second\n I am taking screenshot")
     window.update()
     speak("Sir please hold screen for few second I am taking screenshot")
     time.sleep(3)
@@ -783,7 +815,7 @@ def pdf_reader():
         pg = int(take_cmd())
         page = reader.getPage(pg)
         text_pdf = page.extractText()
-        iris_says.set(f"Reading {bk_name}")
+        label_setter(f"Reading {bk_name}".lower())
         speak(text_pdf)
 
     except Exception as e1:
@@ -864,10 +896,10 @@ def internet_speed():
     us = int(upload_sp / 8000)
     print(f"Your download speed is {ds} KBps and upload speed is {us} KBps")
     print(f"Your ping is {ping} ms")
-    iris_says.set(f"Your download speed is {ds} KBps and upload speed is {us} KBps")
+    label_setter(f"Your download speed is {ds} KBps and upload speed is {us} KBps".lower())
     window.update()
     speak(f"Your download speed is {ds} KBps and upload speed is {us} KBps")
-    iris_says.set(f"Your ping is {ping} ms")
+    label_setter(f"Your ping is {ping} ms".lower())
     window.update()
     speak(f"Your ping is {ping} ms")
 
@@ -895,7 +927,7 @@ def how_are_you():
     speak("by the way how are you? ")
     hay_usr_resp = take_cmd()
     if 'fine' in hay_usr_resp or 'i am good' in hay_usr_resp or 'Ok' in hay_usr_resp:
-        print("I am glad to hear that sir, how may I help you?")
+        print("I am glad to hear that sir,\n how may I help you?")
         iris_says.set("I am glad to hear that sir, how may I help you?")
         window.update()
         speak("I am glad to hear that sir, how may I help you?")
@@ -915,7 +947,7 @@ def how_are_you():
                        "Why shouldn't you write with a broken pen?.....Because it's completely pointless"]
         ran_joke = random.choice(random_joke)
         print(ran_joke)
-        iris_says.set(ran_joke)
+        label_setter(ran_joke)
         window.update()
         speak(ran_joke)
 
@@ -982,7 +1014,7 @@ def notepad():
             with open(filename, 'a') as file:
                 file.write(write.replace(" comma" or ' coma', ", "))
 
-        elif 'full stop' in write:
+        elif 'full stop' in write or 'fullstop' in write:
             with open(filename, 'a') as file:
                 file.write(write.replace(" full stop", ". "))
 
@@ -1052,7 +1084,7 @@ def rps_game():
             i += 1
 
         else:
-            iris_says.set("Please speak only one from\n rock, paper or scissors")
+            label_setter("Please speak only one from rock, paper or scissors")
             window.update()
             speak("Please speak only one from rock, paper or scissors")
 
@@ -1104,10 +1136,10 @@ def assistant_in_english():
         elif 'open command prompt' in query:
             start_cmd()
 
-        elif 'send whatsapp message' in query:
+        elif 'send whatsapp message' in query or 'send a whatsapp message' in query:
             whatsapp_message()
 
-        elif 'play video on youtube' in query:
+        elif 'play video on youtube' in query or 'play on youtube' in query:
             play_on_yt()
 
         elif 'tell me a joke' in query:
@@ -1340,7 +1372,7 @@ def update_suggestion_arg(suggest):
     elif 'prompt' in suggest or 'com' in suggest:
         suggestion_variable = "Open command prompt"
         return suggestion_variable
-    elif 'whatsapp' in suggest or 'message' in suggest or 'whats' in suggest or 'app' in suggest or 'msg' in suggest:
+    elif 'whatsapp' in suggest or 'message' in suggest or 'whats' in suggest or 'msg' in suggest:
         suggestion_variable = "Send whatsapp message"
         return suggestion_variable
     elif 'video' in suggest or 'youtube' in suggest or 'yt' in suggest:
@@ -1370,7 +1402,7 @@ def update_suggestion_arg(suggest):
     elif 'pow' in suggest or 'charging' in suggest or 'bat' in suggest:
         suggestion_variable = "Battery or Power"
         return suggestion_variable
-    elif 'network' in suggest or 'inter' in suggest or 'spe' in suggest:
+    elif 'network' in suggest or 'inter' in suggest or 'spe' in suggest or 'net' in suggest:
         suggestion_variable = "Internet Speed "
         return suggestion_variable
     elif 'translate' in suggest or 'hindi' in suggest or 'trans' in suggest:
@@ -1408,9 +1440,10 @@ def update_suggestion_arg(suggest):
 def update_email_db():
     """UI function to implement update_email database function"""
     update_email = Tk()
+    update_email.resizable(False, False)
     update_email.title("Update Email Database")
     update_email.geometry("625x300")
-    update_email.config(bg="#264d7e")
+    update_email.config(bg="#474b47")
     email_name = StringVar()
     email_address = StringVar()
 
@@ -1419,33 +1452,33 @@ def update_email_db():
         s2 = entry_email_address.get()
 
         if len(s2) > 1 and len(s1) > 1:
-            pop2.config(fg="#00ff00", bg="#264d7e")
+            pop2.config(fg="#00ff00", bg="#474b47")
             pop2.config(text="Email Entered Successfully!")
             create_and_update_email_database(s1, s2)
             window.update()
         else:
-            pop2.config(fg="#ff0000", bg="#264d7e")
+            pop2.config(fg="#ff0000", bg="#474b47")
             pop2.config(text="Email Can't be Empty !")
             window.update()
 
-    pop2 = Label(update_email, bg="#264d7e")
+    pop2 = Label(update_email, bg="#474b47")
     pop2.pack()
 
-    ue_lab1 = Label(update_email, text="Enter name here" )
+    ue_lab1 = Label(update_email, text="Enter name here", bg="#f3f9a7")
     ue_lab1.pack()
-    pop3 = Label(update_email, bg="#264d7e")
+    pop3 = Label(update_email, bg="#474b47")
     pop3.pack()
     entry_email_name = Entry(update_email, textvar=email_name)
     entry_email_name.pack()
-    pop4 = Label(update_email, bg="#264d7e")
+    pop4 = Label(update_email, bg="#474b47")
     pop4.pack()
-    un_label = Label(update_email, text="Enter E-Mail Address Here")
+    un_label = Label(update_email, text="Enter E-Mail Address Here", bg="#f3f9a7")
     un_label.pack()
-    pop5 = Label(update_email, bg="#264d7e")
+    pop5 = Label(update_email, bg="#474b47")
     pop5.pack()
     entry_email_address = Entry(update_email, textvar=email_address)
     entry_email_address.pack()
-    pop6 = Label(update_email, bg="#264d7e")
+    pop6 = Label(update_email, bg="#474b47")
     pop6.pack()
     button_submit = Button(update_email, text="SUBMIT", command=email_print)
     button_submit.pack()
@@ -1455,9 +1488,10 @@ def update_email_db():
 def update_phone_number_db():
     """UI function to implement update_phone_number_db function"""
     update_phone_number_db = Tk()
+    update_phone_number_db.resizable(False, False)
     update_phone_number_db.title("Update Phone number Database")
     update_phone_number_db.geometry("625x300")
-    update_phone_number_db.config(bg="#264d7e")
+    update_phone_number_db.config(bg="#474b47")
     phone_number_name = StringVar()
     phone_number = StringVar()
     string_name = StringVar()
@@ -1480,23 +1514,23 @@ def update_phone_number_db():
             window.update()
             update_phone_number_db.update()
 
-    pop1 = Label(update_phone_number_db, text="", font=("Brandon Grotesque", 12), bg="#264d7e")
+    pop1 = Label(update_phone_number_db, text="", font=("Brandon Grotesque", 12), bg="#474b47")
     pop1.pack()
-    un_lab1 = Label(update_phone_number_db, text="Enter name here")
+    un_lab1 = Label(update_phone_number_db, text="Enter name here", bg="#f3f9a7")
     un_lab1.pack()
-    bl1 = Label(update_phone_number_db, text="", font=("Brandon Grotesque", 6), bg="#264d7e")
+    bl1 = Label(update_phone_number_db, text="", font=("Brandon Grotesque", 6), bg="#474b47")
     bl1.pack()
     entry_phone_number_name = Entry(update_phone_number_db, textvariable=phone_number_name)
     entry_phone_number_name.pack()
-    bl2 = Label(update_phone_number_db, text="", font=("Brandon Grotesque", 6), bg="#264d7e")
+    bl2 = Label(update_phone_number_db, text="", font=("Brandon Grotesque", 6), bg="#474b47")
     bl2.pack()
-    un1_label = Label(update_phone_number_db, text="Enter Phone number here +91")
+    un1_label = Label(update_phone_number_db, text="Enter Phone number here +91", bg="#f3f9a7")
     un1_label.pack()
-    bl3 = Label(update_phone_number_db, text="", font=("Brandon Grotesque", 6), bg="#264d7e")
+    bl3 = Label(update_phone_number_db, text="", font=("Brandon Grotesque", 6), bg="#474b47")
     bl3.pack()
     entry_phone_number = Entry(update_phone_number_db, textvariable=phone_number)
     entry_phone_number.pack()
-    bl4 = Label(update_phone_number_db, text="", font=("Brandon Grotesque", 6), bg="#264d7e")
+    bl4 = Label(update_phone_number_db, text="", font=("Brandon Grotesque", 6), bg="#474b47")
     bl4.pack()
     button_submit = Button(update_phone_number_db, text="SUBMIT", command=phone_number_print)
     button_submit.pack()
@@ -1511,16 +1545,17 @@ def open_history():
 def update_all_database():
     """Main UI conatiner for updating database"""
     all_db = Tk()
+    all_db.resizable(False, False)
     all_db.title("UPDATE DATABASE")
     all_db.geometry("525x500")
-    all_db.config(bg="#264d7e")
+    all_db.config(bg="#474b47")
     all_db_button1 = Button(all_db, text="UPDATE EMAIL", command=update_email_db, bg="#f3f9a7",
                             font=("Brandon Grotesque", 12)).place(x=185, y=215)
     # lspace = Label(all_db, text=" ")
     all_db_button2 = Button(all_db, text="UPDATE PHONE NUMBER ", command=update_phone_number_db, bg="#f3f9a7",
                             font=("Brandon Grotesque", 12)).place(x=135, y=280)
     # lspace2 = Label(all_db, text=" ")
-    all_db_label1 = Label(all_db, text="\nSELECT DATABASE TO BE UPDATED\n", bg="#264d7e", fg="#ffffff",
+    all_db_label1 = Label(all_db, text="\nSELECT DATABASE TO BE UPDATED\n", bg="#474b47", fg="#ffffff",
                           font=("comic sans ms", 15)).place(x=37, y=100)
     # all_db_blank_label = Label(all_db, text=" ", height=4)
 
@@ -1635,19 +1670,18 @@ if __name__ == '__main__':
     # background_label = Label(window, image=bg).place(x=-2, y=-2)
     # Start
     window.title("Intelligent and Robust Information System(IRIS)")
-    window.config(bg="#264d7e")
+    window.config(bg="#474b47")
     window.geometry("1350x740")
-    l1 = Label(window, textvariable=user_says, font=("comic sans ms", 18), justify="left", bg="#264d7e",
-               fg="#ffffff").place(x=27,
-                                                                                                               y=30)
+    l1 = Label(window, textvariable=user_says, font=("comic sans ms", 18), justify="left", bg="#474b47",
+               fg="white").place(x=27, y=30)
 
     # frame-1
-    f1 = Frame(window, height=530, width=860, borderwidth=3, bg="#96bf65", relief=SUNKEN).place(x=30, y=120)
+    f1 = Frame(window, height=530, width=860, borderwidth=3, bg="#86c232", relief=SUNKEN).place(x=30, y=120)
 
     # background_frame1 = Label(f1, image=bgf1).place(x=30, y=110)
     iris_says.set("IRIS")
     # label should be 46 character long not more than that
-    iris_says_lab = Label(f1, font=("comic sans ms", 20), bg="#96bf65", textvariable=iris_says).place(
+    iris_says_lab = Label(f1, font=("comic sans ms", 20), bg="#86c232", justify="left", textvariable=iris_says).place(
         x=40, y=125)
 
     # Start button using threading
@@ -1665,16 +1699,16 @@ if __name__ == '__main__':
 
     # frame-2
 
-    f2 = Frame(window, height=680, width=415, borderwidth=3, bg="#96bf65", relief=SUNKEN).place(x=910, y=30)
+    f2 = Frame(window, height=680, width=415, borderwidth=3, bg="#86c232", relief=SUNKEN).place(x=910, y=30)
 
     # background_frame2 = Label(f2, image=bgf2).place(x=910, y=30)
-    search_box = Label(f2, text="Search BOX", font=("comic sans ms", 20), bg="#96bf65").place(x=1040, y=35)
+    search_box = Label(f2, text="Search BOX", font=("comic sans ms", 20), bg="#86c232").place(x=1040, y=35)
     search_box_entry = Entry(f2, textvariable=search_box_variable, font=("comic sans ms", 18), relief=SUNKEN,
                              justify="center", fg="#ffffff",
-                             width=20, background="#264d7e").place(x=940, y=90)
+                             width=20, background="#474b47").place(x=940, y=90)
     update_suggestion()
     search_box_suggest = Label(f2, textvariable=search_box_variable1, font=("comic sans ms", 14), justify="center",
-                               bg="#f3f9a7", width=28).place(x=925, y=145)
+                               bg="#f3f9a7", width=27).place(x=925, y=145)
     mylist = Listbox(f2, height=9, font=("comic sans ms", 16), width=22, relief=GROOVE, justify="center")
 
     list_index = []
@@ -1697,7 +1731,7 @@ if __name__ == '__main__':
             if list_index[0] == 0:
                 mylist.insert(END, iris_task_list[list_index[j]])
                 # mylist.config(justify="center")
-                mylist.itemconfigure(END, bg="#264d7e", fg="")
+                mylist.itemconfigure(END, bg="#474b47", fg="white")
                 mylist.insert(END, iris_task_desc[list_index[j]])
                 # mylist.config(justify="left")
                 mylist.itemconfigure(END, bg="#f3f9a7")
@@ -1706,7 +1740,7 @@ if __name__ == '__main__':
             else:
                 mylist.insert(END, iris_task_list[list_index[j]])
                 # mylist.config(justify="center")
-                mylist.itemconfigure(END, bg="#264d7e", fg="#ffffff")
+                mylist.itemconfigure(END, bg="#474b47", fg="white")
                 mylist.insert(END, iris_task_desc[list_index[j] * 2])
                 # mylist.config(justify="left")
                 mylist.itemconfigure(END, bg="#f3f9a7")
