@@ -1665,9 +1665,7 @@ def update_suggestion():
         search_box_variable1.set("Enter Valid Keyword to Search")
 
 
-iris_task_desc = ["-to search particular",
-                  " thing on google",
-                  "-to open notepad in",
+iris_task_desc = ["-to open notepad in",
                   "new window",
                   "-to play music from",
                   "your system",
@@ -1718,10 +1716,11 @@ iris_task_desc = ["-to search particular",
                   "-to stop IRIS",
                   "and close the application",
                   "-to type with your voice",
-                  "in real time"]
+                  "in real time",
+                  "-to search particular",
+                  " thing on google"]
 
-iris_task_list = ["Search on Google",
-                  "Open Notepad",
+iris_task_list = ["Open Notepad",
                   "Play Music",
                   "News",
                   "Current Time or Time",
@@ -1746,7 +1745,8 @@ iris_task_list = ["Search on Google",
                   "About You",
                   "Change Language",
                   "Sleep (Exit) ",
-                  "Speak and Type"]
+                  "Speak and Type",
+                  "Search on Google"]
 
 '''--------------------------------------------------------------------------------------------------------------------
 ----------------------------------------Logic for Executing various tasks----------------------------------------------
