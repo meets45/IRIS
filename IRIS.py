@@ -10,6 +10,7 @@ import requests
 import smtplib
 import pyautogui
 import time
+import sys
 import pywhatkit
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -26,6 +27,7 @@ from pywikihow import search_wikihow
 import pyjokes
 from tkinter import *
 from tkinter import filedialog
+
 # import win32gui, win32con
 #
 #
@@ -34,8 +36,8 @@ from tkinter import filedialog
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id)
-engine.setProperty('rate', 220)
+engine.setProperty('voice', voices[0].id)
+engine.setProperty('rate', 180)
 
 '''--------------------------------------------------------------------------------------------------------------------
 --------------------------------------------Functions for executing tasks----------------------------------------------
@@ -45,6 +47,11 @@ window = Tk()
 window.resizable(False, False)
 # global iris_says
 iris_says = StringVar()
+
+global db_email
+db_email = False
+global db_phone
+db_phone = False
 # global user_says
 search_box_variable = StringVar()
 search_box_variable1 = StringVar()
@@ -82,21 +89,29 @@ iris_task_set = {"Search on Google -> To Search on google \n", "Open Notepad -> 
 
 def label_setter(argument1):
     if len(argument1) >= 500:
-        iris_says.set(f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:250]}\n {argument1[250:300]}\n {argument1[300:350]}\n {argument1[350:400]}\n {argument1[400:450]}")
+        iris_says.set(
+            f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:250]}\n {argument1[250:300]}\n {argument1[300:350]}\n {argument1[350:400]}\n {argument1[400:450]}")
     elif len(argument1) >= 450:
-        iris_says.set(f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:250]}\n {argument1[250:300]}\n {argument1[300:350]}\n {argument1[350:400]}\n {argument1[400:450]}")
+        iris_says.set(
+            f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:250]}\n {argument1[250:300]}\n {argument1[300:350]}\n {argument1[350:400]}\n {argument1[400:450]}")
     elif len(argument1) >= 400:
-        iris_says.set(f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:250]}\n {argument1[250:300]}\n {argument1[300:350]}\n {argument1[350:400]}\n {argument1[400:len(argument1)]}")
+        iris_says.set(
+            f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:250]}\n {argument1[250:300]}\n {argument1[300:350]}\n {argument1[350:400]}\n {argument1[400:len(argument1)]}")
     elif len(argument1) >= 350:
-        iris_says.set(f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:250]}\n {argument1[250:300]}\n {argument1[300:350]}\n {argument1[350:len(argument1)]}")
+        iris_says.set(
+            f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:250]}\n {argument1[250:300]}\n {argument1[300:350]}\n {argument1[350:len(argument1)]}")
     elif len(argument1) >= 300:
-        iris_says.set(f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:250]}\n {argument1[250:300]}\n {argument1[300:len(argument1)]}")
+        iris_says.set(
+            f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:250]}\n {argument1[250:300]}\n {argument1[300:len(argument1)]}")
     elif len(argument1) >= 250:
-        iris_says.set(f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:250]}\n {argument1[250:len(argument1)]}")
+        iris_says.set(
+            f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:250]}\n {argument1[250:len(argument1)]}")
     elif len(argument1) >= 200:
-        iris_says.set(f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:len(argument1)]}")
+        iris_says.set(
+            f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:200]}\n {argument1[200:len(argument1)]}")
     elif len(argument1) >= 150:
-        iris_says.set(f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:len(argument1)]}")
+        iris_says.set(
+            f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:150]}\n {argument1[150:len(argument1)]}")
     elif len(argument1) >= 100:
         iris_says.set(f"{argument1[0:50]}\n {argument1[50:100]}\n {argument1[100:len(argument1)]}")
     elif len(argument1) >= 50:
@@ -108,18 +123,18 @@ def label_setter(argument1):
 
 
 def about_me():
-    print("I am a Virtual Assistant developed by 3 upcoming engineers")
+    # print("I am a Virtual Assistant developed by 3 upcoming engineers")
     iris_says.set("I am a Virtual Assistant developed by 3 upcoming \nEngineers")
     window.update()
     speak("I am a Virtual Assistant developed by 3 upcoming engineers")
     iris_says.set("Their names are: Meet, Yagnik and Vasu")
     window.update()
-    print("Their names are: Meet, Yagnik and Vaasu")
+    # print("Their names are: Meet, Yagnik and Vaasu")
     speak("Their names are: Meet, Yagnik and Vaasu")
-    iris_says.set("I am still in the learning phase,so please \nforgive me for any inconvenience")
+    iris_says.set("I am still in the learning phase,so please \nforgive me for any inconvenience caused")
     window.update()
-    print("I am still in the learning phase, so please forgive me for any inconvenience")
-    speak("I am still in the learning phase, so please forgive me for any inconvenience")
+    # print("I am still in the learning phase, so please forgive me for any inconvenience caused")
+    speak("I am still in the learning phase, so please forgive me for any inconvenience caused")
 
 
 def getdate():
@@ -137,25 +152,25 @@ def wish_me():
     """This function wishes the user according to time and asks for command"""
     hour = int(datetime.datetime.now().hour)
     if 6 <= hour < 12:
-        speak("Good Morning!")
         iris_says.set("Good Morning!")
         window.update()
+        speak("Good Morning!")
     elif 12 <= hour < 14:
-        speak("Good Noon!")
         iris_says.set("Good Noon!")
         window.update()
+        speak("Good Noon!")
     elif 14 <= hour < 17:
-        speak("Good Afternoon!")
         iris_says.set("Good Afternoon!")
         window.update()
+        speak("Good Afternoon!")
     elif 17 <= hour < 20:
-        speak("Good Evening!")
         iris_says.set("Good Evening!")
         window.update()
+        speak("Good Evening!")
     else:
-        speak("Good Night!")
         iris_says.set("Good Night!")
         window.update()
+        speak("Good Night!")
 
     iris_says.set("I am IRIS, how may I help you?")
     window.update()
@@ -182,12 +197,12 @@ def take_cmd():
             query = r.recognize_google(audio, language='en-in')
             print(f"User said: {query}")
             if len(query) > 120:
-                user_says.set(f"User : {query[len(query)-120:len(query)-60]}\n{query[len(query)-60:len(query)]}")
-                print(len(query))
+                user_says.set(f"User : {query[len(query) - 120:len(query) - 60]}\n{query[len(query) - 60:len(query)]}")
+                # print(len(query))
                 window.update()
             elif len(query) > 60:
                 user_says.set(f"User : {query[0:60]}\n{query[60:len(query)]}")
-                print(len(query))
+                # print(len(query))
                 window.update()
             else:
                 user_says.set(f"User :{query}")
@@ -226,12 +241,12 @@ def take_normal():
         print(f"User said: {query}")
         # user_says.set(f"User : {query}")
         if len(query) >= 100:
-            user_says.set(f"User : {query[len(query)-100:len(query)-50]}\n{query[len(query)-50:len(query)]}")
-            print(len(query))
+            user_says.set(f"User : {query[len(query) - 100:len(query) - 50]}\n{query[len(query) - 50:len(query)]}")
+            # print(len(query))
             window.update()
         elif len(query) >= 50:
             user_says.set(f"User : {query[0:50]}\n{query[50:len(query)]}")
-            print(len(query))
+            # print(len(query))
         else:
             user_says.set(query)
         window.update()
@@ -287,7 +302,8 @@ def translate_hin():
     translate_this = Translator()
     result_hin = translate_this.translate(line)
     text_hin = result_hin.text
-    iris_says.set(f"The translation is {text_hin}")
+    # iris_says.set(f"The translation is {text_hin}")
+    label_setter(f"The translation is {text_hin}")
     window.update()
     speak(f"The translation is {text_hin}")
 
@@ -409,16 +425,24 @@ def create_and_update_email_database(s_name, s_email):
     or if email table exists it inserts data from user choice
     :return:
     """
-    cursor1 = conn1.cursor()
-    cursor1.execute("CREATE TABLE IF NOT EXISTS email(name char(30),email char(30));")
-    cursor1.execute("""
-    INSERT INTO email(name,email)
-    VALUES (?,?)
-    """, (s_name.lower(), s_email))
+    try:
+        global db_email
+        cursor1 = conn1.cursor()
+        cursor1.execute("CREATE TABLE IF NOT EXISTS email(name char(30) primary key,email char(30));")
+        cursor1.execute("""
+        INSERT INTO email(name,email)
+        VALUES (?,?)
+        """, (s_name.lower(), s_email))
 
-    conn1.commit()
+        conn1.commit()
+        db_email = True
+        # print('Data entered successfully.')
 
-    print('Data entered successfully.')
+    except:
+        db_email = False
+        iris_says.set("User name already exists")
+        window.update()
+        speak("User name already exists")
 
 
 def create_and_update_phone_number_database(val1, val2):
@@ -427,20 +451,27 @@ def create_and_update_phone_number_database(val1, val2):
      or if PhoneNumber table exists it inserts data from user choice
      :return:
      """
-    # conn2 = sqlite3.connect('PhoneNumber.db')
-    cursor2 = conn2.cursor()
-    cursor2.execute("CREATE TABLE IF NOT EXISTS phonenumber(name char(30),phonenumber char(13));")
-    print("Please enter +91 before entering number")
-    s1_name = val1
-    s1_number = val2
-    cursor2.execute("""
-    INSERT INTO phonenumber(name,phonenumber)
-    VALUES (?,?)
-    """, (s1_name, s1_number))
+    try:
+        global db_phone
+        # conn2 = sqlite3.connect('PhoneNumber.db')
+        cursor2 = conn2.cursor()
+        cursor2.execute("CREATE TABLE IF NOT EXISTS phonenumber(name char(30) primary key,phonenumber char(13));")
+        # print("Please enter +91 before entering number")
+        s1_name = val1
+        s1_number = val2
+        cursor2.execute("""
+        INSERT INTO phonenumber(name,phonenumber)
+        VALUES (?,?)
+        """, (s1_name, s1_number))
 
-    conn2.commit()
-
-    print('Data entered successfully.')
+        conn2.commit()
+        db_phone = True
+        # print('Data entered successfully.')
+    except:
+        db_phone = False
+        iris_says.set("User name already exists")
+        window.update()
+        speak("User name already exists")
 
 
 def display_all_mail():
@@ -474,7 +505,7 @@ def operators(op):
 def evaluate_expression(op1, opr, op2):
     """Evaluates expression given by user"""
     op1, op2 = int(op1), int(op2)
-    print(operators(opr)(op1, op2))
+    # print(operators(opr)(op1, op2))
     return operators(opr)(op1, op2)
 
 
@@ -559,7 +590,7 @@ def speak_news():
         results = []
         for ar in article:
             results.append(ar['title'])
-            print(len(ar['title']))
+            # print(len(ar['title']))
             label_setter(ar['title'].lower())
             window.update()
             speak(ar['title'])
@@ -663,7 +694,7 @@ def mail():
         window.update()
         speak("what should I say?")
         mail = take_cmd()
-        if 'file bhejiye' in mail or 'send file' in mail:
+        if 'file bhejiye' in mail or 'send file' in mail or 'send a file' in mail:
             email_with_file()
 
         else:
@@ -735,7 +766,7 @@ def play_on_yt():
 def one_random_joke():
     """Tells one random joke"""
     joke = pyjokes.get_joke(language="en", category="all")
-    print(joke)
+    # print(joke)
     label_setter(joke)
     window.update()
     speak(joke)
@@ -746,7 +777,7 @@ def inspire_me():
     response = requests.get("https://zenquotes.io/api/random")
     json_data = json.loads(response.text)
     quote = "\"" + json_data[0]['q'] + "\"" + " - " + json_data[0]['a']
-    print(quote)
+    # print(quote)
     label_setter(quote)
     window.update()
     speak(quote)
@@ -767,7 +798,7 @@ def location_finder():
         country = result['country_name']
         city = result['city']
         state = result['state']
-        print(f"sir we are in {city} city, {state} state and {country} country")
+        # print(f"sir we are in {city} city, {state} state and {country} country")
         iris_says.set(f"sir we are in {city} city,{state} state and \n{country} country")
         window.update()
         speak(f"sir we are in {city} city, {state} state and {country} country")
@@ -802,7 +833,7 @@ def pdf_reader():
         speak("Sir please select correct path of pdf")
         # bk_name = input("Enter path here: ")
         bk_name = filedialog.askopenfilename()
-        print(bk_name)
+        # print(bk_name)
         book = open(bk_name, 'rb')
         reader = PyPDF2.PdfFileReader(book)
         pages = reader.numPages
@@ -834,7 +865,7 @@ def vocal_calculator():
         cal = take_cmd()
         iris_says.set(evaluate_expression(*(cal.split())))
         window.update()
-        print("Your result is: ", end="")
+        # print("Your result is: ", end="")
         speak("Your result is")
         speak(evaluate_expression(*(cal.split())))
     except Exception as e3:
@@ -855,7 +886,7 @@ def temperature():
     temp_req = requests.get(url)
     data = BeautifulSoup(temp_req.text, "html.parser")
     temp = data.find("div", class_="BNeawe").text
-    print(f"current {search2} is {temp}")
+    # print(f"current {search2} is {temp}")
     iris_says.set(f"current {search2} is {temp}")
     window.update()
     speak(f"current {search2} is {temp}")
@@ -894,8 +925,8 @@ def internet_speed():
     ping = speed_test.results.ping
     ds = int(download_sp / 8000)
     us = int(upload_sp / 8000)
-    print(f"Your download speed is {ds} KBps and upload speed is {us} KBps")
-    print(f"Your ping is {ping} ms")
+    # print(f"Your download speed is {ds} KBps and upload speed is {us} KBps")
+    # print(f"Your ping is {ping} ms")
     label_setter(f"Your download speed is {ds} KBps and upload speed is {us} KBps".lower())
     window.update()
     speak(f"Your download speed is {ds} KBps and upload speed is {us} KBps")
@@ -906,11 +937,11 @@ def internet_speed():
 
 def hello():
     """Say's Hello"""
-    hi_response = ["hey", "hello", "hi", "Namaste"]
+    hi_response = ["hey", "hello", "hi", "namaste"]
     hi_resp = random.choice(hi_response)
     iris_says.set(hi_resp)
     window.update()
-    print("IRIS: ", hi_resp)
+    # print("IRIS: ", hi_resp)
     speak(hi_resp)
 
 
@@ -918,7 +949,7 @@ def how_are_you():
     """Adding interactions to IRIS"""
     hay_response = ["I'm fine", "I'm good", "I'm well", "I'm OK"]
     hay_resp = random.choice(hay_response)
-    print("IRIS: ", hay_resp)
+    # print("IRIS: ", hay_resp)
     iris_says.set(hay_resp)
     window.update()
     speak(hay_resp)
@@ -927,13 +958,13 @@ def how_are_you():
     speak("by the way how are you? ")
     hay_usr_resp = take_cmd()
     if 'fine' in hay_usr_resp or 'i am good' in hay_usr_resp or 'Ok' in hay_usr_resp:
-        print("I am glad to hear that sir,\n how may I help you?")
+        # print("I am glad to hear that sir,\n how may I help you?")
         iris_says.set("I am glad to hear that sir, how may I help you?")
         window.update()
         speak("I am glad to hear that sir, how may I help you?")
-    elif 'depressed' in hay_usr_resp or 'not' in hay_usr_resp:
-        print("Sorry to hear that,", end=" ")
-        print("Just be calm and happy")
+    elif 'depressed' in hay_usr_resp or 'sad' in hay_usr_resp:
+        # print("Sorry to hear that,", end=" ")
+        # print("Just be calm and happy")
         iris_says.set("Sorry to hear that, Just be calm and happy")
         window.update()
         speak("Sorry to hear that, Just be calm and happy")
@@ -946,7 +977,7 @@ def how_are_you():
                        "Why was 9 scared of 7?......Because 7 ate 9!",
                        "Why shouldn't you write with a broken pen?.....Because it's completely pointless"]
         ran_joke = random.choice(random_joke)
-        print(ran_joke)
+        # print(ran_joke)
         label_setter(ran_joke)
         window.update()
         speak(ran_joke)
@@ -961,14 +992,14 @@ def sleep():
 
 
 def remember_that():
-    """Remember's the information said to remember by user"""
+    """Remembers the information said to remember by user"""
     iris_says.set("Sir what should I remember")
     window.update()
     speak("Sir what should I remember")
     remember_msg = take_cmd()
-    iris_says.set("You Tell Me To Remind You That :" + remember_msg)
+    label_setter(f"You Tell Me To Remind You That: {remember_msg}")
     window.update()
-    speak("You Tell Me To Remind You That :" + remember_msg)
+    speak("You Tell Me To Remind You That: " + remember_msg)
     remember = open('remember.txt', 'a')
     remember.write(remember_msg + "\t")
     remember.close()
@@ -979,7 +1010,7 @@ def what_i_told_to_remember():
     remember = open('remember.txt', 'r')
     lines = remember.readlines()
     for line in lines:
-        iris_says.set("sir you told me that" + line)
+        label_setter(f"sir you told me that: {line}")
         window.update()
         speak("sir you told me that" + line)
 
@@ -995,6 +1026,8 @@ def forget_what_i_told_to_remember():
     for i in range(len(s)):
         remember.write(s[i])
     remember.close()
+    label_setter("Removed from the list")
+    speak("Removed from the list")
 
 
 def notepad():
@@ -1037,12 +1070,40 @@ def notepad():
     os.startfile(path2)
 
 
+def realtime_notepad():
+    os.makedirs("C:\\Notepad\\NotepadDB", exist_ok=True)
+    path = "C:\\Windows\\Notepad.exe"
+    iris_says.set("Sir I am ready to write")
+    window.update()
+    speak("Sir I am ready to write")
+    iris_says.set("Please tell me what I should write")
+    window.update()
+    speak("Please tell me what I should write")
+    os.startfile(path)
+    time.sleep(0.25)
+    while True:
+        length = 1
+        iteration = 0
+        write = take_normal()
+        if 'complete task' in write:
+            speak("Please enter name of file and check the path in window")
+            pyautogui.hotkey('ctrlleft', 's')
+            time.sleep(3)
+            break
+
+        else:
+            while length <= len(write):
+                pyautogui.press(f"{write[iteration:length]}")
+                iteration = iteration + 1
+                length = length + 1
+
+
 def rps_game():
     """Voice command game for IRIS"""
     iris_says.set("Welcome to Rock, Paper, Scissor game")
     window.update()
     speak("Welcome to Rock, Paper, Scissor game")
-    iris_says.set("There are 5 rounds and the \none to win it most times would win")
+    label_setter("There are 5 rounds and the One to win it most times would win")
     window.update()
     speak("There are 5 rounds and the one to win it most times would win")
     iris_says.set("So let's start")
@@ -1058,27 +1119,23 @@ def rps_game():
         if 'rock' in user_choice or 'paper' in user_choice or 'scissors' in user_choice:
             moves = ['rock', 'paper', 'scissors']
             iris_choice = random.choice(moves)
-            print("IRIS: ", iris_choice)
-            iris_says.set("IRIS: ", iris_choice)
+            label_setter(f"IRIS: {iris_choice}")
             window.update()
-            if user_choice.eq(iris_choice):
-                print("Its a Tie!")
+            if user_choice.__eq__(iris_choice):
                 iris_says.set("Its a Tie!")
                 window.update()
                 speak("Its a Tie!")
                 tied = tied + 1
-            elif user_choice.eq("rock") and iris_choice.eq("scissors") or \
-                    user_choice.eq("paper") and iris_choice.eq("scissors") or user_choice.eq("scissors") and \
-                    iris_choice.eq("paper"):
+            elif user_choice.__eq__("rock") and iris_choice.__eq__("scissors") or \
+                    user_choice.__eq__("paper") and iris_choice.__eq__("scissors") or user_choice.__eq__("scissors") \
+                    and iris_choice.__eq__("paper"):
                 iris_says.set("You Won!")
                 window.update()
-                print("You Won!")
                 speak("You Won!")
                 cnt_user += 1
             else:
                 iris_says.set("IRIS Won!")
                 window.update()
-                print("IRIS Won!")
                 speak("IRIS Won!")
                 cnt_iris += 1
             i += 1
@@ -1089,25 +1146,24 @@ def rps_game():
             speak("Please speak only one from rock, paper or scissors")
 
     if cnt_user > cnt_iris:
-        print("You won the match!")
         iris_says.set("You won the match!")
         window.update()
         speak("You won the match!")
     elif cnt_user == cnt_iris:
-        print("Match is tied!")
+        # print("Match is tied!")
         iris_says.set("Match is tied!")
         window.update()
         speak("Match is tied!")
     else:
         iris_says.set("IRIS won the match!")
         window.update()
-        print("IRIS won the match!")
+        # print("IRIS won the match!")
         speak("IRIS won the match!")
 
 
 def assistant_in_english():
     """Starts IRIS in english"""
-    wish_me()
+    # wish_me()
 
     while True:
         query = take_cmd()
@@ -1187,8 +1243,11 @@ def assistant_in_english():
         elif 'how are you' in query or 'how you doin' in query:
             how_are_you()
 
-        elif 'write in notepad' in query:
+        elif 'write article' in query:
             notepad()
+
+        elif 'speak and type' in query:
+            realtime_notepad()
 
         elif 'play a game' in query:
             rps_game()
@@ -1205,7 +1264,7 @@ def assistant_in_english():
 
 def assistant_in_hindi():
     """Starts IRIS in hindi"""
-    wish_me()
+    # wish_me()
 
     while True:
         query = take_hin()
@@ -1328,7 +1387,7 @@ def full_start():
             elif 'hindi' in ch2 or 'Hindi' in ch2:
                 assistant_in_hindi()
             else:
-                print("Please input correct language")
+                # print("Please input correct language")
                 choice = input("Enter your language here: ")
                 file4 = open('language.txt', 'r+')
                 file4.write(choice)
@@ -1402,7 +1461,7 @@ def update_suggestion_arg(suggest):
     elif 'pow' in suggest or 'charging' in suggest or 'bat' in suggest:
         suggestion_variable = "Battery or Power"
         return suggestion_variable
-    elif 'network' in suggest or 'inter' in suggest or 'spe' in suggest or 'net' in suggest:
+    elif 'network' in suggest or 'inter' in suggest or 'spee' in suggest or 'net' in suggest:
         suggestion_variable = "Internet Speed "
         return suggestion_variable
     elif 'translate' in suggest or 'hindi' in suggest or 'trans' in suggest:
@@ -1417,8 +1476,8 @@ def update_suggestion_arg(suggest):
     elif 'forget' in suggest:
         suggestion_variable = "Forget what I told you to remember"
         return suggestion_variable
-    elif 'write' in suggest or 'type' in suggest or 'wri' in suggest:
-        suggestion_variable = "Write in Notepad"
+    elif 'write' in suggest or 'article' in suggest or 'wri' in suggest:
+        suggestion_variable = "Write Article"
         return suggestion_variable
     elif 'game' in suggest or 'play' in suggest:
         suggestion_variable = "Play a Game"
@@ -1431,6 +1490,9 @@ def update_suggestion_arg(suggest):
         return suggestion_variable
     elif 'sleep' in suggest or 'exit' in suggest or 'stop' in suggest or 'sl' in suggest:
         suggestion_variable = "Exit Application"
+        return suggestion_variable
+    elif 'speech' in suggest or 'real time' in suggest or ' to text' in suggest or 'type' in suggest or 'speak' in suggest:
+        suggestion_variable = "Speak and Type"
         return suggestion_variable
     else:
         suggestion_variable = "Please Enter a\n Valid keyword to search"
@@ -1450,15 +1512,22 @@ def update_email_db():
     def email_print():
         s1 = entry_email_name.get().lower()
         s2 = entry_email_address.get()
-
+        global db_email
         if len(s2) > 1 and len(s1) > 1:
-            pop2.config(fg="#00ff00", bg="#474b47")
-            pop2.config(text="Email Entered Successfully!")
             create_and_update_email_database(s1, s2)
-            window.update()
+            if db_email:
+                pop2.config(fg="#00ff00", bg="#474b47")
+                pop2.config(text="Email Entered Successfully!")
+                update_email.update()
+                window.update()
+                # print("Data entered")
+            else:
+                pop2.config(fg="#ff0000", bg="#474b47")
+                pop2.config(text="User with same name already exists !")
+                window.update()
         else:
             pop2.config(fg="#ff0000", bg="#474b47")
-            pop2.config(text="Email Can't be Empty !")
+            pop2.config(text="Fields cannot be empty!")
             window.update()
 
     pop2 = Label(update_email, bg="#474b47")
@@ -1500,17 +1569,23 @@ def update_phone_number_db():
     def phone_number_print():
         string_name1 = entry_phone_number_name.get()
         string_phone1 = entry_phone_number.get()
-        if len(string_phone1) >= 13:
+        global db_phone
+        if len(string_phone1) == 13:
             create_and_update_phone_number_database(string_name1.lower(), string_phone1)
-            pop1.config(fg="#00ff00")
-            pop1.config(text="Data Entered Successfully!")
-            window.update()
-            update_phone_number_db.update()
+            if db_phone:
+                pop1.config(fg="#00ff00")
+                pop1.config(text="Data Entered Successfully!")
+                window.update()
+                update_phone_number_db.update()
+            else:
+                pop1.config(fg="#ff0000")
+                pop1.config(text="User with same name already exists!")
+                window.update()
+                update_phone_number_db.update()
+
         else:
-            print(string_name1)
-            print(string_phone1)
             pop1.config(fg="#ff0000")
-            pop1.config(text="Enter Valid Phone number With Country Code")
+            pop1.config(text="Enter Valid Phone number With Country Code!")
             window.update()
             update_phone_number_db.update()
 
@@ -1585,8 +1660,8 @@ iris_task_desc = ["-to search particular",
                   "new window",
                   "-to play music from",
                   "your system",
-                  "-to get top 5 news",
-                  "(Nationally)",
+                  "-to get top 5",
+                  "national news",
                   "-to get current date &",
                   "time of your system",
                   "-to send email from",
@@ -1611,8 +1686,8 @@ iris_task_desc = ["-to search particular",
                   "your system",
                   "-to do vocal",
                   "calculations",
-                  "-to get current temperature",
-                  "of city",
+                  "-to get current temp",
+                  "of a city",
                   "-to get charging %",
                   "of your system",
                   "-to get your network",
@@ -1621,16 +1696,18 @@ iris_task_desc = ["-to search particular",
                   "voice in hindi",
                   "-to set remainder",
                   "for particular event",
-                  "-to write verbally",
-                  "in notepad",
+                  "-to write article with",
+                  "your voice in notepad",
                   "-to play game",
                   "(snake-paper-scissor)",
                   "-to get information ",
                   "about I.R.I.S.",
                   "-to change language of",
-                  "I.R.I.S. (Hindi/English)",
+                  "I.R.I.S. (Hindi_English)",
                   "-to stop IRIS",
-                  "and close the application"]
+                  "and close the application",
+                  "-to type with your voice",
+                  "in real time"]
 
 iris_task_list = ["Search on Google",
                   "Open Notepad",
@@ -1653,12 +1730,13 @@ iris_task_list = ["Search on Google",
                   "Network Speed",
                   "Translate from Hindi",
                   "Remember that",
-                  "Write In Notepad",
+                  "Write Article",
                   "Play a Game",
                   "About You",
                   "Change Language",
-                  "Sleep (Exit) "]
-9
+                  "Sleep (Exit) ",
+                  "Speak and Type"]
+
 '''--------------------------------------------------------------------------------------------------------------------
 ----------------------------------------Logic for Executing various tasks----------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------'''
@@ -1718,13 +1796,13 @@ if __name__ == '__main__':
         list_index.clear()
         window.update()
         for i in range(150000):
-            r = random.randint(0, 25)
+            r = random.randint(0, 26)
             if r not in list_index:
                 list_index.append(r)
 
 
     def list_generator_update():
-        window.after(20000, list_generator_update)
+        window.after(15000, list_generator_update)
         mylist.delete(0, END)
         list_index_generator()
         for j in range(3):
@@ -1748,6 +1826,7 @@ if __name__ == '__main__':
                 mylist.itemconfigure(END, bg="#f3f9a7")
 
 
+    list_index.clear()
     list_generator_update()
     mylist.place(x=940, y=255)
 
