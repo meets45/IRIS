@@ -196,14 +196,17 @@ def take_cmd():
             window.update()
             query = r.recognize_google(audio, language='en-in')
             print(f"User said: {query}")
-            if len(query) >= 100:
-                user_says.set(f"User : {query[len(query) - 100:len(query) - 55]}\n{query[len(query) - 55:len(query)]}")
-                # print(len(query))
+            if len(query) >= 120:
+                user_says.set(f"User : {query[len(query) - 100:len(query) - 50]}\n{query[len(query) - 50:len(query)]}")
                 window.update()
-            elif len(query) >= 50:
+            elif len(query) >= 60:
                 user_says.set(f"User : {query[0:50]}\n{query[50:len(query)]}")
+                window.update()
+                # print(len(query))
             else:
-                iris_says.set(f"{query}")
+                # user_says.set(query)
+                user_says.set(f"{query}")
+                window.update()
             f = open("UserHistory.txt", "a")
             f.write(str([str(getdate())]) + ":" + query + "\n")
 
@@ -237,16 +240,17 @@ def take_normal():
         query = r.recognize_google(audio, language='en-in')
         print(f"User said: {query}")
         # user_says.set(f"User : {query}")
-        if len(query) >= 100:
-            user_says.set(f"User : {query[len(query) - 100:len(query) - 55]}\n{query[len(query) - 55:len(query)]}")
-            # print(len(query))
+        if len(query) >= 120:
+            user_says.set(f"User : {query[len(query) - 100:len(query) - 50]}\n{query[len(query) - 50:len(query)]}")
             window.update()
-        elif len(query) >= 50:
+        elif len(query) >= 60:
             user_says.set(f"User : {query[0:50]}\n{query[50:len(query)]}")
+            window.update()
             # print(len(query))
         else:
-            user_says.set(query)
-        window.update()
+            # user_says.set(query)
+            user_says.set(f"{query}")
+            window.update()
         window.update()
         f = open("UserHistory.txt", "a")
         f.write(str([str(getdate())]) + ":" + query + "\n")
@@ -278,14 +282,17 @@ def take_hin():
         window.update()
         query = r.recognize_google(audio, language='hi')
         print(f"User said: {query}")
-        if len(query) >= 100:
-            user_says.set(f"User : {query[len(query) - 100:len(query) - 55]}\n{query[len(query) - 55:len(query)]}")
-            # print(len(query))
+        if len(query) >= 120:
+            user_says.set(f"User : {query[len(query) - 100:len(query) - 50]}\n{query[len(query) - 50:len(query)]}")
             window.update()
-        elif len(query) >= 50:
+        elif len(query) >= 60:
             user_says.set(f"User : {query[0:50]}\n{query[50:len(query)]}")
+            window.update()
+            # print(len(query))
         else:
-            iris_says.set(f"{query}")
+            # user_says.set(query)
+            user_says.set(f"{query}")
+            window.update()
         window.update()
 
     except Exception as e:
