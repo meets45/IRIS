@@ -36,7 +36,7 @@ from tkinter import filedialog
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[0].id)
+engine.setProperty('voice', voices[1].id)
 engine.setProperty('rate', 180)
 
 '''--------------------------------------------------------------------------------------------------------------------
@@ -196,17 +196,14 @@ def take_cmd():
             window.update()
             query = r.recognize_google(audio, language='en-in')
             print(f"User said: {query}")
-            if len(query) > 120:
-                user_says.set(f"User : {query[len(query) - 120:len(query) - 60]}\n{query[len(query) - 60:len(query)]}")
+            if len(query) >= 100:
+                user_says.set(f"User : {query[len(query) - 100:len(query) - 55]}\n{query[len(query) - 55:len(query)]}")
                 # print(len(query))
                 window.update()
-            elif len(query) > 60:
-                user_says.set(f"User : {query[0:60]}\n{query[60:len(query)]}")
-                # print(len(query))
-                window.update()
+            elif len(query) >= 50:
+                user_says.set(f"User : {query[0:50]}\n{query[50:len(query)]}")
             else:
-                user_says.set(f"User :{query}")
-                window.update()
+                iris_says.set(f"{query}")
             f = open("UserHistory.txt", "a")
             f.write(str([str(getdate())]) + ":" + query + "\n")
 
@@ -241,7 +238,7 @@ def take_normal():
         print(f"User said: {query}")
         # user_says.set(f"User : {query}")
         if len(query) >= 100:
-            user_says.set(f"User : {query[len(query) - 100:len(query) - 50]}\n{query[len(query) - 50:len(query)]}")
+            user_says.set(f"User : {query[len(query) - 100:len(query) - 55]}\n{query[len(query) - 55:len(query)]}")
             # print(len(query))
             window.update()
         elif len(query) >= 50:
@@ -281,7 +278,14 @@ def take_hin():
         window.update()
         query = r.recognize_google(audio, language='hi')
         print(f"User said: {query}")
-        user_says.set(f"User : {query}")
+        if len(query) >= 100:
+            user_says.set(f"User : {query[len(query) - 100:len(query) - 55]}\n{query[len(query) - 55:len(query)]}")
+            # print(len(query))
+            window.update()
+        elif len(query) >= 50:
+            user_says.set(f"User : {query[0:50]}\n{query[50:len(query)]}")
+        else:
+            iris_says.set(f"{query}")
         window.update()
 
     except Exception as e:
@@ -1163,7 +1167,7 @@ def rps_game():
 
 def assistant_in_english():
     """Starts IRIS in english"""
-    # wish_me()
+    wish_me()
 
     while True:
         query = take_cmd()
@@ -1264,7 +1268,7 @@ def assistant_in_english():
 
 def assistant_in_hindi():
     """Starts IRIS in hindi"""
-    # wish_me()
+    wish_me()
 
     while True:
         query = take_hin()
