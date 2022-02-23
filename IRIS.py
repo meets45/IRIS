@@ -36,7 +36,7 @@ from tkinter import filedialog
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id)
+engine.setProperty('voice', voices[0].id)
 engine.setProperty('rate', 180)
 
 '''--------------------------------------------------------------------------------------------------------------------
@@ -52,7 +52,6 @@ global db_email
 db_email = False
 global db_phone
 db_phone = False
-# global user_says
 search_box_variable = StringVar()
 search_box_variable1 = StringVar()
 user_says = StringVar()
@@ -60,31 +59,6 @@ iris_says.set("Start")
 
 user_says.set(" USER")
 window.update()
-
-iris_task_set = {"Search on Google -> To Search on google \n", "Open Notepad -> To Open Notepad\n",
-                 "Play Music -> To Play Music\n", "News -> To Read Latest News\n",
-                 "Current Time or Time -> To Display Current-Time\n",
-                 "Send E-Mail -> To send Email\n",
-                 "Switch Window -> To Switch Window\n",
-                 "Open Command Prompt -> To open command prompt\n",
-                 "Send WhatsApp Message or WhatsApp Message -> To send whatsapp message\n",
-                 "Play Video On YouTube -> To Play a Particular Video on YouTube\n",
-                 "Tell Me a Joke -> To Read Random Joke\n",
-                 "Inspire Me -> To Read Great Quotations\n",
-                 "Where am I or Show My Location -> To Know Your Current Location from your IP\n",
-                 "Take ScreenShot -> To Take a Screen Shot\n",
-                 "Read the Book or Read PDF -> To Read a PDF-Book(AudioBook)\n",
-                 "Calculate This or Do Some Calculations -> To Perform some Calculations\n",
-                 "Temperature or Weather -> To Know Temperature of Any City\n",
-                 "Power or Battery -> To know Percentage of Charging Remaining In System\n",
-                 "Internet Speed or Network Speed -> To Check your Internet Speed (it takes 10-15 sec.)\n",
-                 "Translate from Hindi -> To Translate Hindi-Sentence to English\n",
-                 "Remember that -> To Remember your Commands\n",
-                 "Write In Notepad -> To Write in Notepad\n",
-                 "Play a Game -> To Play Rock, Paper, Scissor Game\n",
-                 "About You -> To know About Me(IRIS)\n",
-                 "Change Language -> To Change Language(currently supported languages:English/हिंदी)\n",
-                 "Sleep -> To Exit "}
 
 
 def label_setter(argument1):
@@ -123,17 +97,14 @@ def label_setter(argument1):
 
 
 def about_me():
-    # print("I am a Virtual Assistant developed by 3 upcoming engineers")
     iris_says.set("I am a Virtual Assistant developed by 3 upcoming \nEngineers")
     window.update()
     speak("I am a Virtual Assistant developed by 3 upcoming engineers")
     iris_says.set("Their names are: Meet, Yagnik and Vasu")
     window.update()
-    # print("Their names are: Meet, Yagnik and Vaasu")
     speak("Their names are: Meet, Yagnik and Vaasu")
     iris_says.set("I am still in the learning phase,so please \nforgive me for any inconvenience caused")
     window.update()
-    # print("I am still in the learning phase, so please forgive me for any inconvenience caused")
     speak("I am still in the learning phase, so please forgive me for any inconvenience caused")
 
 
@@ -239,16 +210,13 @@ def take_normal():
         window.update()
         query = r.recognize_google(audio, language='en-in')
         print(f"User said: {query}")
-        # user_says.set(f"User : {query}")
         if len(query) >= 120:
             user_says.set(f"User : {query[len(query) - 100:len(query) - 50]}\n{query[len(query) - 50:len(query)]}")
             window.update()
         elif len(query) >= 60:
             user_says.set(f"User : {query[0:50]}\n{query[50:len(query)]}")
             window.update()
-            # print(len(query))
         else:
-            # user_says.set(query)
             user_says.set(f"{query}")
             window.update()
         window.update()
@@ -288,9 +256,7 @@ def take_hin():
         elif len(query) >= 60:
             user_says.set(f"User : {query[0:50]}\n{query[50:len(query)]}")
             window.update()
-            # print(len(query))
         else:
-            # user_says.set(query)
             user_says.set(f"{query}")
             window.update()
         window.update()
@@ -313,7 +279,6 @@ def translate_hin():
     translate_this = Translator()
     result_hin = translate_this.translate(line)
     text_hin = result_hin.text
-    # iris_says.set(f"The translation is {text_hin}")
     label_setter(f"The translation is {text_hin}")
     window.update()
     speak(f"The translation is {text_hin}")
@@ -376,10 +341,8 @@ def select_email_name(searched_mail):
     This function selects email address from its argument searched_mail, which is name of user to send email
     :return:
     """
-
     cursor = conn1.cursor()
     cursor.execute("SELECT * FROM email WHERE name=? ", (searched_mail,))
-    # cursor.execute("SELECT * FROM email ")
     rows = cursor.fetchall()
 
     try:
@@ -401,7 +364,6 @@ def select_phone_number_name(searched_phone_number):
 
     cursor2 = conn2.cursor()
     cursor2.execute("SELECT * FROM phonenumber WHERE name=? ", (searched_phone_number,))
-    # cursor2.execute("SELECT * FROM phonenumber ")
     rows = cursor2.fetchall()
     try:
         for row in rows:
@@ -467,7 +429,6 @@ def create_and_update_phone_number_database(val1, val2):
         # conn2 = sqlite3.connect('PhoneNumber.db')
         cursor2 = conn2.cursor()
         cursor2.execute("CREATE TABLE IF NOT EXISTS phonenumber(name char(30) primary key,phonenumber char(13));")
-        # print("Please enter +91 before entering number")
         s1_name = val1
         s1_number = val2
         cursor2.execute("""
@@ -477,7 +438,7 @@ def create_and_update_phone_number_database(val1, val2):
 
         conn2.commit()
         db_phone = True
-        # print('Data entered successfully.')
+
     except:
         db_phone = False
         iris_says.set("User name already exists")
@@ -516,12 +477,11 @@ def operators(op):
 def evaluate_expression(op1, opr, op2):
     """Evaluates expression given by user"""
     op1, op2 = int(op1), int(op2)
-    # print(operators(opr)(op1, op2))
     return operators(opr)(op1, op2)
 
 
 def search_on_google():
-    """Perform search operation through google search engine
+    """Perform search operation through Google search engine
     If user search query begins with "how" it will search on WikiHow"""
     try:
         iris_says.set("Sir what should I search on google")
@@ -581,7 +541,6 @@ def play_music():
                     else:
                         get_mp3()
                         break
-
         get_mp3()
 
     except Exception as e4:
@@ -589,7 +548,7 @@ def play_music():
 
 
 def speak_news():
-    """Fetches latest national news and displays/provides it to User"""
+    """Fetches the latest national news and displays/provides it to User"""
     try:
         iris_says.set("News for today...Let's Begin")
         window.update()
@@ -746,6 +705,8 @@ def whatsapp_message():
         receiver_name = select_phone_number_name(name2)
         if name2 in receiver_name:
             pywhatkit.sendwhatmsg_instantly(receiver_number, message)
+            time.sleep(8)
+            pyautogui.press('enter')
         else:
             iris_says.set("The person is not in your contact list")
             window.update()
@@ -809,7 +770,6 @@ def location_finder():
         country = result['country_name']
         city = result['city']
         state = result['state']
-        # print(f"sir we are in {city} city, {state} state and {country} country")
         iris_says.set(f"sir we are in {city} city,{state} state and \n{country} country")
         window.update()
         speak(f"sir we are in {city} city, {state} state and {country} country")
@@ -842,9 +802,7 @@ def pdf_reader():
         iris_says.set("Sir please input correct path of pdf")
         window.update()
         speak("Sir please select correct path of pdf")
-        # bk_name = input("Enter path here: ")
         bk_name = filedialog.askopenfilename()
-        # print(bk_name)
         book = open(bk_name, 'rb')
         reader = PyPDF2.PdfFileReader(book)
         pages = reader.numPages
@@ -876,7 +834,6 @@ def vocal_calculator():
         cal = take_cmd()
         iris_says.set(evaluate_expression(*(cal.split())))
         window.update()
-        # print("Your result is: ", end="")
         speak("Your result is")
         speak(evaluate_expression(*(cal.split())))
     except Exception as e3:
@@ -897,7 +854,6 @@ def temperature():
     temp_req = requests.get(url)
     data = BeautifulSoup(temp_req.text, "html.parser")
     temp = data.find("div", class_="BNeawe").text
-    # print(f"current {search2} is {temp}")
     iris_says.set(f"current {search2} is {temp}")
     window.update()
     speak(f"current {search2} is {temp}")
@@ -936,8 +892,6 @@ def internet_speed():
     ping = speed_test.results.ping
     ds = int(download_sp / 8000)
     us = int(upload_sp / 8000)
-    # print(f"Your download speed is {ds} KBps and upload speed is {us} KBps")
-    # print(f"Your ping is {ping} ms")
     label_setter(f"Your download speed is {ds} KBps and upload speed is {us} KBps".lower())
     window.update()
     speak(f"Your download speed is {ds} KBps and upload speed is {us} KBps")
@@ -952,7 +906,6 @@ def hello():
     hi_resp = random.choice(hi_response)
     iris_says.set(hi_resp)
     window.update()
-    # print("IRIS: ", hi_resp)
     speak(hi_resp)
 
 
@@ -969,13 +922,10 @@ def how_are_you():
     speak("by the way how are you? ")
     hay_usr_resp = take_cmd()
     if 'fine' in hay_usr_resp or 'i am good' in hay_usr_resp or 'Ok' in hay_usr_resp:
-        # print("I am glad to hear that sir,\n how may I help you?")
         iris_says.set("I am glad to hear that sir, how may I help you?")
         window.update()
         speak("I am glad to hear that sir, how may I help you?")
     elif 'depressed' in hay_usr_resp or 'sad' in hay_usr_resp:
-        # print("Sorry to hear that,", end=" ")
-        # print("Just be calm and happy")
         iris_says.set("Sorry to hear that, Just be calm and happy")
         window.update()
         speak("Sorry to hear that, Just be calm and happy")
@@ -1161,20 +1111,18 @@ def rps_game():
         window.update()
         speak("You won the match!")
     elif cnt_user == cnt_iris:
-        # print("Match is tied!")
         iris_says.set("Match is tied!")
         window.update()
         speak("Match is tied!")
     else:
         iris_says.set("IRIS won the match!")
         window.update()
-        # print("IRIS won the match!")
         speak("IRIS won the match!")
 
 
 def assistant_in_english():
     """Starts IRIS in english"""
-    wish_me()
+    # wish_me()
 
     while True:
         query = take_cmd()
@@ -1275,7 +1223,7 @@ def assistant_in_english():
 
 def assistant_in_hindi():
     """Starts IRIS in hindi"""
-    wish_me()
+    # wish_me()
 
     while True:
         query = take_hin()
@@ -1371,8 +1319,6 @@ def assistant_in_hindi():
 def full_start():
     """Initiates IRIS and starts the program"""
     try:
-        # conn1 = sqlite3.connect('MailDatabase.db')
-        # conn2 = sqlite3.connect('PhoneNumberDatabase.db')
         file7 = open('language.txt', 'r+')
         file7.close()
         file1 = open('language.txt', 'r+')
@@ -1413,7 +1359,6 @@ def destroy_window():
     """Closes the program"""
     window.destroy()
     sys.exit(0)
-    # threading.Thread(target=full_start)
 
 
 def update_suggestion_arg(suggest):
@@ -1629,7 +1574,7 @@ def open_history():
 
 
 def update_all_database():
-    """Main UI conatiner for updating database"""
+    """Main UI container for updating database"""
     all_db = Tk()
     all_db.resizable(False, False)
     all_db.title("UPDATE DATABASE")
@@ -1637,19 +1582,10 @@ def update_all_database():
     all_db.config(bg="#474b47")
     all_db_button1 = Button(all_db, text="UPDATE EMAIL", command=update_email_db, bg="#f3f9a7",
                             font=("Brandon Grotesque", 12)).place(x=185, y=215)
-    # lspace = Label(all_db, text=" ")
     all_db_button2 = Button(all_db, text="UPDATE PHONE NUMBER ", command=update_phone_number_db, bg="#f3f9a7",
                             font=("Brandon Grotesque", 12)).place(x=135, y=280)
-    # lspace2 = Label(all_db, text=" ")
     all_db_label1 = Label(all_db, text="\nSELECT DATABASE TO BE UPDATED\n", bg="#474b47", fg="#ffffff",
                           font=("comic sans ms", 15)).place(x=37, y=100)
-    # all_db_blank_label = Label(all_db, text=" ", height=4)
-
-    # full_l1.place(x=0, y=0)
-    # all_db_label1.pack(x=50, y=100)
-    # # all_db_blank_label.pack()
-    # all_db_button1.pack(x=50, y=150)
-    # all_db_button2.pack(x=50, y=250)
 
     all_db.mainloop()
 
@@ -1665,8 +1601,8 @@ def update_suggestion():
         search_box_variable1.set("Enter Valid Keyword to Search")
 
 
-iris_task_desc = ["-to open notepad in",
-                  "new window",
+iris_task_desc = ["-to open new instance",
+                  "of notepad",
                   "-to play music from",
                   "your system",
                   "-to get top 5",
@@ -1708,7 +1644,7 @@ iris_task_desc = ["-to open notepad in",
                   "-to write article with",
                   "your voice in notepad",
                   "-to play game",
-                  "(stone-paper-scissor)",
+                  "(rock-paper-scissors)",
                   "-to get information ",
                   "about I.R.I.S.",
                   "-to change language of",
@@ -1756,20 +1692,15 @@ if __name__ == '__main__':
     conn1 = sqlite3.connect('MailDatabase.db', check_same_thread=False)
     conn2 = sqlite3.connect('PhoneNumberDatabase.db', check_same_thread=False)
 
-    # background_label = Label(window, image=bg).place(x=-2, y=-2)
-    # Start
     window.title("Intelligent and Robust Information System(IRIS)")
     window.config(bg="#474b47")
     window.geometry("1350x740")
     l1 = Label(window, textvariable=user_says, font=("comic sans ms", 18), justify="left", bg="#474b47",
                fg="white").place(x=27, y=30)
 
-    # frame-1
     f1 = Frame(window, height=530, width=860, borderwidth=3, bg="#86c232", relief=SUNKEN).place(x=30, y=120)
 
-    # background_frame1 = Label(f1, image=bgf1).place(x=30, y=110)
     iris_says.set("IRIS")
-    # label should be 46 character long not more than that
     iris_says_lab = Label(f1, font=("comic sans ms", 20), bg="#86c232", justify="left", textvariable=iris_says).place(
         x=40, y=125)
 
@@ -1786,11 +1717,8 @@ if __name__ == '__main__':
     exit_button = Button(window, text="Exit", font=("comic sans ms", 12),
                          command=lambda: threading.Thread(target=destroy_window).start()).place(x=835, y=670)
 
-    # frame-2
-
     f2 = Frame(window, height=680, width=415, borderwidth=3, bg="#86c232", relief=SUNKEN).place(x=910, y=30)
 
-    # background_frame2 = Label(f2, image=bgf2).place(x=910, y=30)
     search_box = Label(f2, text="Search BOX", font=("comic sans ms", 20), bg="#86c232").place(x=1040, y=35)
     search_box_entry = Entry(f2, textvariable=search_box_variable, font=("comic sans ms", 18), relief=SUNKEN,
                              justify="center", fg="#ffffff",
@@ -1806,8 +1734,8 @@ if __name__ == '__main__':
     def list_index_generator():
         list_index.clear()
         window.update()
-        for i in range(15000):
-            r = random.randint(1, 25)
+        for i in range(300000):
+            r = random.randint(0, len(iris_task_list)-1)
             if r not in list_index:
                 list_index.append(r)
 
@@ -1817,21 +1745,17 @@ if __name__ == '__main__':
         window.after(15000, list_generator_update)
         mylist.delete(0, END)
         for j in range(3):
-            if list_index[0] == 0:
+            if list_index[j] == 0:
                 mylist.insert(END, iris_task_list[list_index[j]])
-                # mylist.config(justify="center")
                 mylist.itemconfigure(END, bg="#474b47", fg="white")
                 mylist.insert(END, iris_task_desc[list_index[j]])
-                # mylist.config(justify="left")
                 mylist.itemconfigure(END, bg="#f3f9a7")
                 mylist.insert(END, iris_task_desc[list_index[j] + 1])
                 mylist.itemconfigure(END, bg="#f3f9a7")
             else:
                 mylist.insert(END, iris_task_list[list_index[j]])
-                # mylist.config(justify="center")
                 mylist.itemconfigure(END, bg="#474b47", fg="white")
                 mylist.insert(END, iris_task_desc[list_index[j] * 2])
-                # mylist.config(justify="left")
                 mylist.itemconfigure(END, bg="#f3f9a7")
                 mylist.insert(END, iris_task_desc[list_index[j] * 2 + 1])
                 mylist.itemconfigure(END, bg="#f3f9a7")
