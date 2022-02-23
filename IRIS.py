@@ -1008,11 +1008,11 @@ def remember_that():
     window.update()
     speak("Sir what should I remember")
     remember_msg = take_cmd()
-    label_setter(f"You Tell Me To Remind You That: {remember_msg}")
+    label_setter(f"You Told Me To Remind You That: {remember_msg}")
     window.update()
-    speak("You Tell Me To Remind You That: " + remember_msg)
+    speak("You Told Me To Remind You That: " + remember_msg)
     remember = open('remember.txt', 'a')
-    remember.write(remember_msg + "\t")
+    remember.write(remember_msg + "\n")
     remember.close()
 
 
@@ -1710,7 +1710,7 @@ iris_task_desc = ["-to search particular",
                   "-to write article with",
                   "your voice in notepad",
                   "-to play game",
-                  "(snake-paper-scissor)",
+                  "(stone-paper-scissor)",
                   "-to get information ",
                   "about I.R.I.S.",
                   "-to change language of",
@@ -1806,16 +1806,16 @@ if __name__ == '__main__':
     def list_index_generator():
         list_index.clear()
         window.update()
-        for i in range(150000):
-            r = random.randint(0, 26)
+        for i in range(15000):
+            r = random.randint(1, 25)
             if r not in list_index:
                 list_index.append(r)
 
 
     def list_generator_update():
+        list_index_generator()
         window.after(15000, list_generator_update)
         mylist.delete(0, END)
-        list_index_generator()
         for j in range(3):
             if list_index[0] == 0:
                 mylist.insert(END, iris_task_list[list_index[j]])
