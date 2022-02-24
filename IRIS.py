@@ -36,7 +36,7 @@ from tkinter import filedialog
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[0].id)
+engine.setProperty('voice', voices[1].id)
 engine.setProperty('rate', 180)
 
 '''--------------------------------------------------------------------------------------------------------------------
@@ -261,7 +261,7 @@ def take_hin():
             window.update()
         window.update()
 
-    except Exception as e:
+    except:
         print("Say that again please...")
         iris_says.set("Say that again please")
         window.update()
@@ -332,8 +332,8 @@ def select_email(searched_mail):
             required_mail = row[1]
             return required_mail
 
-    except Exception as e1:
-        print(e1)
+    except:
+        label_setter(f"No contact for username {searched_mail} found")
 
 
 def select_email_name(searched_mail):
@@ -350,8 +350,8 @@ def select_email_name(searched_mail):
             required_mail_name = row[0]
             return required_mail_name
 
-    except Exception as e4:
-        print(e4)
+    except:
+        label_setter(f"No contact for username {searched_mail} found")
 
 
 def select_phone_number_name(searched_phone_number):
@@ -369,8 +369,8 @@ def select_phone_number_name(searched_phone_number):
         for row in rows:
             required_number_name = row[0]
             return required_number_name
-    except Exception as e2:
-        print(e2)
+    except:
+        label_setter(f"No contact for username {searched_phone_number} found")
 
 
 def select_phone_number(searched_phone_number):
@@ -388,8 +388,8 @@ def select_phone_number(searched_phone_number):
             required_number = row[1]
             return required_number
 
-    except Exception as e3:
-        print(e3)
+    except:
+        label_setter(f"No contact for user {searched_phone_number} found")
 
 
 def create_and_update_email_database(s_name, s_email):
@@ -1122,7 +1122,7 @@ def rps_game():
 
 def assistant_in_english():
     """Starts IRIS in english"""
-    # wish_me()
+    wish_me()
 
     while True:
         query = take_cmd()
@@ -1223,7 +1223,7 @@ def assistant_in_english():
 
 def assistant_in_hindi():
     """Starts IRIS in hindi"""
-    # wish_me()
+    wish_me()
 
     while True:
         query = take_hin()
