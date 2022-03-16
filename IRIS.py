@@ -10,7 +10,7 @@ import requests
 import smtplib
 import pyautogui
 import time
-import sys
+import sys as s1
 import pywhatkit
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -45,8 +45,11 @@ engine.setProperty('rate', 180)
 
 window = Tk()
 window.resizable(False, False)
-# global iris_says
+
 iris_says = StringVar()
+
+# photo = PhotoImage(file="IRIS_LOGO_FR.PNG")
+# window.iconphoto(False, photo)
 
 global db_email
 db_email = False
@@ -173,9 +176,7 @@ def take_cmd():
             elif len(query) >= 60:
                 user_says.set(f"User : {query[0:50]}\n{query[50:len(query)]}")
                 window.update()
-                # print(len(query))
             else:
-                # user_says.set(query)
                 user_says.set(f"{query}")
                 window.update()
             f = open("UserHistory.txt", "a")
@@ -409,7 +410,6 @@ def create_and_update_email_database(s_name, s_email):
 
         conn1.commit()
         db_email = True
-        # print('Data entered successfully.')
 
     except:
         db_email = False
@@ -632,7 +632,7 @@ def email_with_file():
         window.update()
         speak("Your email has been sent")
     else:
-        iris_says.set("Person is not in your email database, please update your database")
+        label_setter("Person is not in your email database, please update your database")
         window.update()
         speak("Person is not in your email database, please update your database")
 
@@ -705,16 +705,16 @@ def whatsapp_message():
         receiver_name = select_phone_number_name(name2)
         if name2 in receiver_name:
             pywhatkit.sendwhatmsg_instantly(receiver_number, message)
-            time.sleep(8)
+            time.sleep(10)
             pyautogui.press('enter')
         else:
             iris_says.set("The person is not in your contact list")
             window.update()
             speak("The person is not in your contact list")
-    except Exception as e:
-        iris_says.set(e)
+    except:
+        label_setter("Please speak valid name and try again")
         window.update()
-        speak("Unable to send the message now, please try again")
+        speak("Please speak valid name and try again")
 
 
 def play_on_yt():
@@ -738,7 +738,6 @@ def play_on_yt():
 def one_random_joke():
     """Tells one random joke"""
     joke = pyjokes.get_joke(language="en", category="all")
-    # print(joke)
     label_setter(joke)
     window.update()
     speak(joke)
@@ -749,7 +748,6 @@ def inspire_me():
     response = requests.get("https://zenquotes.io/api/random")
     json_data = json.loads(response.text)
     quote = "\"" + json_data[0]['q'] + "\"" + " - " + json_data[0]['a']
-    # print(quote)
     label_setter(quote)
     window.update()
     speak(quote)
@@ -913,7 +911,6 @@ def how_are_you():
     """Adding interactions to IRIS"""
     hay_response = ["I'm fine", "I'm good", "I'm well", "I'm OK"]
     hay_resp = random.choice(hay_response)
-    # print("IRIS: ", hay_resp)
     iris_says.set(hay_resp)
     window.update()
     speak(hay_resp)
@@ -938,7 +935,6 @@ def how_are_you():
                        "Why was 9 scared of 7?......Because 7 ate 9!",
                        "Why shouldn't you write with a broken pen?.....Because it's completely pointless"]
         ran_joke = random.choice(random_joke)
-        # print(ran_joke)
         label_setter(ran_joke)
         window.update()
         speak(ran_joke)
@@ -949,7 +945,7 @@ def sleep():
     iris_says.set("Thanks for using IRIS, have a good day sir!")
     window.update()
     speak("Thanks for using IRIS, have a good day sir!")
-    exit()
+    s1.exit(0)
 
 
 def remember_that():
@@ -1032,6 +1028,7 @@ def notepad():
 
 
 def realtime_notepad():
+    """Writes in notepad what user said, in real time"""
     os.makedirs("C:\\Notepad\\NotepadDB", exist_ok=True)
     path = "C:\\Windows\\Notepad.exe"
     iris_says.set("Sir I am ready to write")
@@ -1046,7 +1043,7 @@ def realtime_notepad():
         length = 1
         iteration = 0
         write = take_normal()
-        if 'complete task' in write:
+        if write == "complete task":
             speak("Please enter name of file and check the path in window")
             pyautogui.hotkey('ctrlleft', 's')
             time.sleep(3)
@@ -1358,6 +1355,7 @@ def full_start():
 def destroy_window():
     """Closes the program"""
     window.destroy()
+    engine.stop()
     sys.exit(0)
 
 
@@ -1476,7 +1474,6 @@ def update_email_db():
                 pop2.config(text="Email Entered Successfully!")
                 update_email.update()
                 window.update()
-                # print("Data entered")
             else:
                 pop2.config(fg="#ff0000", bg="#474b47")
                 pop2.config(text="User with same name already exists !")
