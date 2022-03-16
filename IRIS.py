@@ -30,7 +30,6 @@ from tkinter import filedialog
 
 # import win32gui, win32con
 #
-#
 # hide = win32gui.GetForegroundWindow()
 # win32gui.ShowWindow(hide, win32con.SW_HIDE)
 
@@ -45,9 +44,9 @@ engine.setProperty('rate', 180)
 
 window = Tk()
 window.resizable(False, False)
-
+# global iris_says
 iris_says = StringVar()
-
+#
 # photo = PhotoImage(file="IRIS_LOGO_FR.PNG")
 # window.iconphoto(False, photo)
 
@@ -1044,9 +1043,20 @@ def realtime_notepad():
         iteration = 0
         write = take_normal()
         if write == "complete task":
-            speak("Please enter name of file and check the path in window")
+            iris_says.set("Please speak name of file and check the path in window")
+            window.update()
+            speak("Please speak name of file and check the path in window")
             pyautogui.hotkey('ctrlleft', 's')
             time.sleep(3)
+            iris_says.set("Speak the name of file: ")
+            window.update()
+            speak("Speak the name of file: ")
+            name = take_cmd()
+            pyautogui.typewrite(name)
+            pyautogui.press('enter')
+            iris_says.set("Your file has been saved!")
+            window.update()
+            speak("Your file has been saved")
             break
 
         else:
@@ -1054,6 +1064,7 @@ def realtime_notepad():
                 pyautogui.press(f"{write[iteration:length]}")
                 iteration = iteration + 1
                 length = length + 1
+            pyautogui.press('space')
 
 
 def rps_game():
@@ -1305,6 +1316,9 @@ def assistant_in_hindi():
 
         elif 'आप के बारे में बताए' in query:
             about_me()
+
+        elif 'स्पीक एंड टाइप' in query:
+            realtime_notepad()
 
         elif 'भाषा बदलिए' in query:
             iris_starter()
