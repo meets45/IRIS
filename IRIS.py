@@ -160,7 +160,7 @@ def take_cmd():
             iris_says.set("Listening...")
             window.update()
             r.pause_threshold = 0.7
-            r.energy_threshold = 350
+            r.energy_threshold = 400
             r.adjust_for_ambient_noise(source)
             audio = r.listen(source)
 
@@ -1014,7 +1014,7 @@ def notepad():
             with open(filename, 'a') as file:
                 file.write(write.replace("enter key", " ") + "\n")
 
-        elif write=="complete task":
+        elif write == "save file":
             with open(filename, 'a') as file:
                 file.write(write.replace("complete task", " "))
                 break
@@ -1045,8 +1045,8 @@ def realtime_notepad():
         length = 1
         iteration = 0
         write = take_normal()
-        if write == "complete task":
-            iris_says.set("Please speak name of file and check the path in window")
+        if write == "save file":
+            iris_says.set("Please check the path in window")
             window.update()
             speak("Please check the path in window")
             pyautogui.hotkey('ctrlleft', 's')
