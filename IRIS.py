@@ -10,7 +10,7 @@ import requests
 import smtplib
 import pyautogui
 import time
-import sys as s1
+import sys
 import pywhatkit
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -159,10 +159,11 @@ def take_cmd():
             print("\nListening...")
             iris_says.set("Listening...")
             window.update()
-            r.pause_threshold = 0.5
-            r.energy_threshold = 500
-            audio = r.listen(source)
+            r.pause_threshold = 0.7
+            r.energy_threshold = 350
             r.adjust_for_ambient_noise(source)
+            audio = r.listen(source)
+
         try:
             print("Recognizing...")
             iris_says.set("Recognizing...")
@@ -185,7 +186,7 @@ def take_cmd():
             print("Say that again please...")
             iris_says.set("Say that again please...")
             window.update()
-            return "None"
+            return ""
         return query.lower()
 
     except Exception as e:
@@ -202,8 +203,9 @@ def take_normal():
         window.update()
         r.pause_threshold = 1.5
         r.energy_threshold = 500
-        audio = r.listen(source)
         r.adjust_for_ambient_noise(source)
+        audio = r.listen(source)
+
     try:
         print("Recognizing...")
         iris_says.set("Recognizing...")
@@ -239,8 +241,8 @@ def take_hin():
         print("\nListening...")
         iris_says.set("Listening...")
         window.update()
-        r.pause_threshold = 1.5
-        r.energy_threshold = 150
+        r.pause_threshold = 1.2
+        r.energy_threshold = 400
         r.adjust_for_ambient_noise(source)
         audio = r.listen(source)
 
@@ -727,6 +729,7 @@ def play_on_yt():
         window.update()
         speak("Starting YouTube...")
         pywhatkit.playonyt(video_name)
+        time.sleep(20)
 
     except:
         iris_says.set("Can't play video now, please try again")
@@ -851,7 +854,7 @@ def temperature():
     temp_req = requests.get(url)
     data = BeautifulSoup(temp_req.text, "html.parser")
     temp = data.find("div", class_="BNeawe").text
-    iris_says.set(f"current {search2} is {temp}")
+    label_setter(f"current {search2} is {temp}")
     window.update()
     speak(f"current {search2} is {temp}")
 
@@ -944,7 +947,7 @@ def sleep():
     iris_says.set("Thanks for using IRIS, have a good day sir!")
     window.update()
     speak("Thanks for using IRIS, have a good day sir!")
-    s1.exit(0)
+    sys.exit(0)
 
 
 def remember_that():
@@ -1011,7 +1014,7 @@ def notepad():
             with open(filename, 'a') as file:
                 file.write(write.replace("enter key", " ") + "\n")
 
-        elif 'complete task' in write:
+        elif write=="complete task":
             with open(filename, 'a') as file:
                 file.write(write.replace("complete task", " "))
                 break
@@ -1045,9 +1048,9 @@ def realtime_notepad():
         if write == "complete task":
             iris_says.set("Please speak name of file and check the path in window")
             window.update()
-            speak("Please speak name of file and check the path in window")
+            speak("Please check the path in window")
             pyautogui.hotkey('ctrlleft', 's')
-            time.sleep(3)
+            time.sleep(2)
             iris_says.set("Speak the name of file: ")
             window.update()
             speak("Speak the name of file: ")
@@ -1370,7 +1373,7 @@ def destroy_window():
     """Closes the program"""
     window.destroy()
     engine.stop()
-    sys.exit(0)
+    sys.exit()
 
 
 def update_suggestion_arg(suggest):
@@ -1726,7 +1729,7 @@ if __name__ == '__main__':
                      command=lambda: threading.Thread(target=open_history).start()).place(x=560, y=670)
     # Exit button to destroy window
     exit_button = Button(window, text="Exit", font=("comic sans ms", 12),
-                         command=lambda: threading.Thread(target=destroy_window).start()).place(x=835, y=670)
+                         command=lambda: threading.Thread(target=destroy_window()).start()).place(x=835, y=670)
 
     f2 = Frame(window, height=680, width=415, borderwidth=3, bg="#86c232", relief=SUNKEN).place(x=910, y=30)
 
@@ -1775,5 +1778,4 @@ if __name__ == '__main__':
     list_index.clear()
     list_generator_update()
     mylist.place(x=940, y=255)
-
     window.mainloop()
