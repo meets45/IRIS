@@ -241,7 +241,7 @@ def take_hin():
         print("\nListening...")
         iris_says.set("Listening...")
         window.update()
-        r.pause_threshold = 1.2
+        r.pause_threshold = 1.0
         r.energy_threshold = 400
         r.adjust_for_ambient_noise(source)
         audio = r.listen(source)
@@ -251,6 +251,44 @@ def take_hin():
         iris_says.set("Recognizing...")
         window.update()
         query = r.recognize_google(audio, language='hi')
+        print(f"User said: {query}")
+        if len(query) >= 120:
+            user_says.set(f"User : {query[len(query) - 100:len(query) - 50]}\n{query[len(query) - 50:len(query)]}")
+            window.update()
+        elif len(query) >= 60:
+            user_says.set(f"User : {query[0:50]}\n{query[50:len(query)]}")
+            window.update()
+        else:
+            user_says.set(f"{query}")
+            window.update()
+        window.update()
+
+    except:
+        print("Say that again please...")
+        iris_says.set("Say that again please")
+        window.update()
+        return ""
+
+    return query
+
+
+def take_guj():
+    """It takes input from user and converts it to text"""
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("\nListening...")
+        iris_says.set("Listening...")
+        window.update()
+        r.pause_threshold = 0.7
+        r.energy_threshold = 400
+        r.adjust_for_ambient_noise(source)
+        audio = r.listen(source)
+
+    try:
+        print("Recognizing...")
+        iris_says.set("Recognizing...")
+        window.update()
+        query = r.recognize_google(audio, language='gu-in')
         print(f"User said: {query}")
         if len(query) >= 120:
             user_says.set(f"User : {query[len(query) - 100:len(query) - 50]}\n{query[len(query) - 50:len(query)]}")
@@ -286,6 +324,20 @@ def translate_hin():
     speak(f"The translation is {text_hin}")
 
 
+def translate_guj():
+    """It translates hindi sentences to English"""
+    iris_says.set("Tell me the Line")
+    window.update()
+    speak("Tell me the line")
+    line = take_guj()
+    translate_this = Translator()
+    result_guj = translate_this.translate(line)
+    text_hin = result_guj.text
+    label_setter(f"The translation is {text_hin}")
+    window.update()
+    speak(f"The translation is {text_hin}")
+
+
 def send_email(to, mail):
     """This function is used to send email to user"""
     server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -313,6 +365,8 @@ def iris_starter():
             assistant_in_english()
         elif 'hindi' in ch5:
             assistant_in_hindi()
+        elif 'gujarati' in ch5:
+            assistant_in_gujarati()
 
     except Exception as e5:
         print(e5)
@@ -866,11 +920,11 @@ def current_battery():
     iris_says.set(f"Sir your system has {percentage} percent battery left")
     window.update()
     speak(f"Sir your system has {percentage} percent battery left")
-    if percentage >= 50:
+    if percentage >= 40:
         iris_says.set("sir we have enough power to continue our work")
         window.update()
         speak("sir we have enough power to continue our work")
-    elif 50 > percentage >= 35:
+    elif 40 > percentage >= 20:
         iris_says.set("sir we should connect our system to charging point")
         window.update()
         speak("sir we should connect our system to charging point")
@@ -890,11 +944,11 @@ def internet_speed():
     upload_sp = speed_test.upload()
     speed_test.get_servers([])
     ping = speed_test.results.ping
-    ds = int(download_sp / 8000)
-    us = int(upload_sp / 8000)
-    label_setter(f"Your download speed is {ds} KBps and upload speed is {us} KBps".lower())
+    ds = float(download_sp / 800000)
+    us = float(upload_sp / 800000)
+    label_setter(f"Your download speed is {ds:.2f} Mbps and upload speed is {us:.2f} Mbps".lower())
     window.update()
-    speak(f"Your download speed is {ds} KBps and upload speed is {us} KBps")
+    speak(f"Your download speed is {ds:.2f} Mbps and upload speed is {us:.2f} Mbps")
     label_setter(f"Your ping is {ping} ms".lower())
     window.update()
     speak(f"Your ping is {ping} ms")
@@ -920,11 +974,11 @@ def how_are_you():
     window.update()
     speak("by the way how are you? ")
     hay_usr_resp = take_cmd()
-    if 'fine' in hay_usr_resp or 'i am good' in hay_usr_resp or 'Ok' in hay_usr_resp:
+    if 'i am fine' in hay_usr_resp or 'i am good' in hay_usr_resp or 'Ok' in hay_usr_resp:
         iris_says.set("I am glad to hear that sir, how may I help you?")
         window.update()
         speak("I am glad to hear that sir, how may I help you?")
-    elif 'depressed' in hay_usr_resp or 'sad' in hay_usr_resp:
+    elif 'depressed' in hay_usr_resp or 'sad' in hay_usr_resp or 'not fine' in hay_usr_resp:
         iris_says.set("Sorry to hear that, Just be calm and happy")
         window.update()
         speak("Sorry to hear that, Just be calm and happy")
@@ -1045,6 +1099,7 @@ def realtime_notepad():
         length = 1
         iteration = 0
         write = take_normal()
+        label_setter("Typing...")
         if write == "save file":
             iris_says.set("Please check the path in window")
             window.update()
@@ -1330,6 +1385,104 @@ def assistant_in_hindi():
             sleep()
 
 
+def assistant_in_gujarati():
+    """Starts IRIS in hindi"""
+    wish_me()
+
+    while True:
+        query = take_guj()
+        # Logic for executing tasks based on user query
+        if 'ગૂગલ કરો' in query or 'google કરો' in query:
+            search_on_google()
+
+        elif 'નોટપેડ ખોલો' in query:
+            open_notepad()
+
+        elif 'ગાવાનું વગાડો' in query or 'ગીત વગાડો' in query:
+            play_music()
+
+        elif 'સમાચાર' in query:
+            speak_news()
+
+        elif 'સમય' in query:
+            current_time()
+
+        elif 'મેઇલ મોકલો' in query:
+            mail()
+
+        elif 'વિન્ડો બદલો' in query:
+            switch_win()
+
+        elif 'કમાન્ડ પ્રોમ્પ્ટ ખોલો' in query or 'કમાંડ પ્રોમ્પ્ટ ખોલો' in query:
+            start_cmd()
+
+        elif 'મેસેજ મોકલો' in query:
+            whatsapp_message()
+
+        elif 'યુટયુબ ખોલો' in query or 'youtube ખોલો' in query:
+            play_on_yt()
+
+        elif 'જોક્સ સંભળાવો' in query:
+            one_random_joke()
+
+        elif 'સુવાક્ય સંભળાવો' in query:
+            inspire_me()
+
+        elif 'લોકેશન બતાવો' in query:
+            location_finder()
+
+        elif 'સ્ક્રીનશોટ લેજો' in query:
+            screenshot()
+
+        elif 'પીડીએફ વાંચો' in query or 'પુસ્તક વાંચો' in query:
+            pdf_reader()
+
+        elif 'ગણતરી કરો' in query:
+            vocal_calculator()
+
+        elif 'હવામાન બતાવો' in query:
+            temperature()
+
+        elif 'ચાર્જિંગ જણાવો' in query:
+            current_battery()
+
+        elif 'ઇન્ટરનેટ સ્પીડ' in query:
+            internet_speed()
+
+        elif 'હાઈ' in query or 'હેલ્લો' in query:
+            hello()
+
+        elif 'ઇંગલિશ માં અનુવાદ કરો' in query:
+            translate_guj()
+
+        elif 'યાદ રાખો' in query:
+            remember_that()
+
+        elif 'મેં તને શું યાદ રાખવા કીધેલું' in query:
+            what_i_told_to_remember()
+
+        elif 'ભૂલી જાવ' in query:
+            forget_what_i_told_to_remember()
+
+        elif 'તમે કેમ છો' in query:
+            how_are_you()
+
+        elif 'આર્ટીકલ લખો' in query:
+            notepad()
+
+        elif 'તમારા વિશે જણાવો' in query:
+            about_me()
+
+        elif 'speak and type' in query or 'સ્પીક એન્ડ ટાઈપ' in query:
+            realtime_notepad()
+
+        elif 'ભાષા બદલો' in query:
+            iris_starter()
+
+        elif 'સુઈ જાવ' in query or 'આરામ કરો' in query:
+            sleep()
+
+
 def full_start():
     """Initiates IRIS and starts the program"""
     try:
@@ -1349,6 +1502,8 @@ def full_start():
                 assistant_in_english()
             elif 'hindi' in ch3:
                 assistant_in_hindi()
+            elif 'gujarati' in ch3:
+                assistant_in_gujarati()
 
         else:
             file2 = open('language.txt', 'r+')
@@ -1357,8 +1512,9 @@ def full_start():
                 assistant_in_english()
             elif 'hindi' in ch2 or 'Hindi' in ch2:
                 assistant_in_hindi()
+            elif 'gujarati' in ch2 or 'Gujarati' in ch2:
+                assistant_in_gujarati()
             else:
-                # print("Please input correct language")
                 choice = input("Enter your language here: ")
                 file4 = open('language.txt', 'r+')
                 file4.write(choice)
@@ -1661,8 +1817,8 @@ iris_task_desc = ["-to open new instance",
                   "(rock-paper-scissors)",
                   "-to get information ",
                   "about I.R.I.S.",
-                  "-to change language of",
-                  "I.R.I.S. (Hindi_English)",
+                  "-to change language to",
+                  "(English/Hindi/Gujarati)",
                   "-to stop IRIS",
                   "and close the application",
                   "-to type with your voice",
