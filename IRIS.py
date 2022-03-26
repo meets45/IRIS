@@ -11,6 +11,7 @@ import smtplib
 import pyautogui
 import time
 import sys
+from pynput.keyboard import Controller as key_ctrl
 import pywhatkit
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -61,6 +62,8 @@ iris_says.set("Start")
 
 user_says.set(" USER")
 window.update()
+
+keyboard = key_ctrl()
 
 
 def label_setter(argument1):
@@ -160,9 +163,9 @@ def take_cmd():
             iris_says.set("Listening...")
             window.update()
             r.pause_threshold = 0.7
-            r.energy_threshold = 400
+            r.energy_threshold = 350
             r.adjust_for_ambient_noise(source)
-            audio = r.listen(source)
+            audio = r.listen(source, phrase_time_limit=2.5)
 
         try:
             print("Recognizing...")
@@ -201,8 +204,8 @@ def take_normal():
         print("\nListening...")
         iris_says.set("Listening...")
         window.update()
-        r.pause_threshold = 1.5
-        r.energy_threshold = 500
+        r.pause_threshold = 1.2
+        r.energy_threshold = 350
         r.adjust_for_ambient_noise(source)
         audio = r.listen(source)
 
@@ -242,7 +245,7 @@ def take_hin():
         iris_says.set("Listening...")
         window.update()
         r.pause_threshold = 1.0
-        r.energy_threshold = 400
+        r.energy_threshold = 350
         r.adjust_for_ambient_noise(source)
         audio = r.listen(source)
 
@@ -279,8 +282,8 @@ def take_guj():
         print("\nListening...")
         iris_says.set("Listening...")
         window.update()
-        r.pause_threshold = 0.7
-        r.energy_threshold = 400
+        r.pause_threshold = 1.0
+        r.energy_threshold = 350
         r.adjust_for_ambient_noise(source)
         audio = r.listen(source)
 
@@ -778,7 +781,7 @@ def play_on_yt():
         iris_says.set("Please tell me the title of video")
         window.update()
         speak("Please tell me the title of video")
-        video_name = take_cmd()
+        video_name = take_normal()
         iris_says.set("Starting YouTube...")
         window.update()
         speak("Starting YouTube...")
@@ -828,7 +831,7 @@ def location_finder():
         window.update()
         speak(f"sir we are in {city} city, {state} state and {country} country")
     except:
-        iris_says.set("Sorry sir due to network issue I am not able to find where we are")
+        label_setter("Sorry sir due to network issue I am not able to find where we are")
         window.update()
         speak("Sorry sir due to network issue I am not able to find where we are")
 
@@ -885,7 +888,7 @@ def vocal_calculator():
         iris_says.set("What should I calculate, Example 4 plus 5")
         window.update()
         speak("What should I calculate, Example 4 plus 5")
-        cal = take_cmd()
+        cal = take_normal()
         iris_says.set(evaluate_expression(*(cal.split())))
         window.update()
         speak("Your result is")
@@ -1009,7 +1012,7 @@ def remember_that():
     iris_says.set("Sir what should I remember")
     window.update()
     speak("Sir what should I remember")
-    remember_msg = take_cmd()
+    remember_msg = take_normal()
     label_setter(f"You Told Me To Remind You That: {remember_msg}")
     window.update()
     speak("You Told Me To Remind You That: " + remember_msg)
@@ -1056,13 +1059,13 @@ def notepad():
     filename = str(time_now).replace(":", "-") + " note.txt"
     while True:
         write = take_normal()
-        if 'comma' in write or 'coma' in write:
+        if 'comma' in write or 'coma' in write or ' coma' in write or ' comma' in write or 'comma ' in write or 'coma ' in write:
             with open(filename, 'a') as file:
-                file.write(write.replace(" comma" or ' coma', ", "))
+                file.write(write.replace(" comma" or ' coma' or 'comma ' or 'coma ' or 'comma' or 'coma', ", "))
 
-        elif 'full stop' in write or 'fullstop' in write:
+        elif 'full stop ' in write or 'fullstop' in write or ' full stop' in write:
             with open(filename, 'a') as file:
-                file.write(write.replace(" full stop", ". "))
+                file.write(write.replace(" full stop" or 'fullstop' 'full stop', ". "))
 
         elif 'enter key' in write:
             with open(filename, 'a') as file:
@@ -1070,7 +1073,7 @@ def notepad():
 
         elif write == "save file":
             with open(filename, 'a') as file:
-                file.write(write.replace("complete task", " "))
+                file.write(write.replace("save file", " "))
                 break
 
         else:
@@ -1087,6 +1090,15 @@ def realtime_notepad():
     """Writes in notepad what user said, in real time"""
     os.makedirs("C:\\Notepad\\NotepadDB", exist_ok=True)
     path = "C:\\Windows\\Notepad.exe"
+    fileLang = open('language.txt', 'r+')
+    lang = fileLang.readline()
+    fileLang.close()
+    if 'english' in lang:
+        language = "english"
+    elif 'hindi' in lang:
+        language = "hindi"
+    elif 'gujarati' in lang:
+        language = "gujarati"
     iris_says.set("Sir I am ready to write")
     window.update()
     speak("Sir I am ready to write")
@@ -1096,11 +1108,15 @@ def realtime_notepad():
     os.startfile(path)
     time.sleep(0.25)
     while True:
-        length = 1
-        iteration = 0
-        write = take_normal()
+        if language.__eq__("english"):
+            write = take_normal()
+        elif language.__eq__("hindi"):
+            write = take_hin()
+        elif language.__eq__("gujarati"):
+            write = take_guj()
+
         label_setter("Typing...")
-        if write == "save file":
+        if write == "save file" or write == "सेव फाइल":
             iris_says.set("Please check the path in window")
             window.update()
             speak("Please check the path in window")
@@ -1110,18 +1126,23 @@ def realtime_notepad():
             window.update()
             speak("Speak the name of file: ")
             name = take_cmd()
-            pyautogui.typewrite(name)
-            pyautogui.press('enter')
+            if name == '':
+                time_now = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S")
+                filename = str(time_now).replace(":", "-") + " note.txt"
+                pyautogui.typewrite(filename)
+                pyautogui.press('enter')
+            else:
+                pyautogui.typewrite(name)
+                pyautogui.press('enter')
             iris_says.set("Your file has been saved!")
             window.update()
             speak("Your file has been saved")
             break
 
         else:
-            while length <= len(write):
-                pyautogui.press(f"{write[iteration:length]}")
-                iteration = iteration + 1
-                length = length + 1
+            for iteration in write:
+                keyboard.type(iteration)
+                time.sleep(0.025)
             pyautogui.press('space')
 
 
@@ -1515,7 +1536,7 @@ def full_start():
             elif 'gujarati' in ch2 or 'Gujarati' in ch2:
                 assistant_in_gujarati()
             else:
-                choice = input("Enter your language here: ")
+                choice = "english"
                 file4 = open('language.txt', 'r+')
                 file4.write(choice)
                 file4.close()
