@@ -28,7 +28,10 @@ from pywikihow import search_wikihow
 import pyjokes
 from tkinter import *
 from tkinter import filedialog
+import win32gui, win32con
 
+hide = win32gui.GetForegroundWindow()
+win32gui.ShowWindow(hide, win32con.SW_HIDE)
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
