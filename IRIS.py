@@ -29,27 +29,25 @@ import pyjokes
 from tkinter import *
 from tkinter import filedialog
 
-# import win32gui, win32con
-#
-# hide = win32gui.GetForegroundWindow()
-# win32gui.ShowWindow(hide, win32con.SW_HIDE)
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id)
+engine.setProperty('voice', voices[0].id)
 engine.setProperty('rate', 180)
+
 
 '''--------------------------------------------------------------------------------------------------------------------
 --------------------------------------------Functions for executing tasks----------------------------------------------
 ---------------------------------------------------------------------------------------------------------------------'''
 
+
 window = Tk()
 window.resizable(False, False)
 # global iris_says
 iris_says = StringVar()
-#
-# photo = PhotoImage(file="IRIS_LOGO_FR.PNG")
-# window.iconphoto(False, photo)
+
+photo = PhotoImage(file="IRIS_LOGO_FR.PNG")
+window.iconphoto(False, photo)
 
 global db_email
 db_email = False
@@ -163,7 +161,7 @@ def take_cmd():
             iris_says.set("Listening...")
             window.update()
             r.pause_threshold = 0.7
-            r.energy_threshold = 350
+            r.energy_threshold = 400
             r.adjust_for_ambient_noise(source)
             audio = r.listen(source, phrase_time_limit=2.5)
 
@@ -204,8 +202,8 @@ def take_normal():
         print("\nListening...")
         iris_says.set("Listening...")
         window.update()
-        r.pause_threshold = 1.2
-        r.energy_threshold = 350
+        r.pause_threshold = 1.5
+        r.energy_threshold = 500
         r.adjust_for_ambient_noise(source)
         audio = r.listen(source)
 
@@ -245,7 +243,7 @@ def take_hin():
         iris_says.set("Listening...")
         window.update()
         r.pause_threshold = 1.0
-        r.energy_threshold = 350
+        r.energy_threshold = 400
         r.adjust_for_ambient_noise(source)
         audio = r.listen(source)
 
@@ -282,8 +280,8 @@ def take_guj():
         print("\nListening...")
         iris_says.set("Listening...")
         window.update()
-        r.pause_threshold = 1.0
-        r.energy_threshold = 350
+        r.pause_threshold = 0.7
+        r.energy_threshold = 400
         r.adjust_for_ambient_noise(source)
         audio = r.listen(source)
 
@@ -328,7 +326,7 @@ def translate_hin():
 
 
 def translate_guj():
-    """It translates hindi sentences to English"""
+    """It translates gujarati sentences to English"""
     iris_says.set("Tell me the Line")
     window.update()
     speak("Tell me the line")
@@ -1059,13 +1057,13 @@ def notepad():
     filename = str(time_now).replace(":", "-") + " note.txt"
     while True:
         write = take_normal()
-        if 'comma' in write or 'coma' in write or ' coma' in write or ' comma' in write or 'comma ' in write or 'coma ' in write:
+        if 'comma' in write or 'coma' in write:
             with open(filename, 'a') as file:
                 file.write(write.replace(" comma" or ' coma' or 'comma ' or 'coma ' or 'comma' or 'coma', ", "))
 
-        elif 'full stop ' in write or 'fullstop' in write or ' full stop' in write:
+        elif 'full stop' in write:
             with open(filename, 'a') as file:
-                file.write(write.replace(" full stop" or 'fullstop' 'full stop', ". "))
+                file.write(write.replace(" full stop" or 'fullstop' 'full stop' or 'full stop ', ". "))
 
         elif 'enter key' in write:
             with open(filename, 'a') as file:
@@ -1088,7 +1086,6 @@ def notepad():
 
 def realtime_notepad():
     """Writes in notepad what user said, in real time"""
-    os.makedirs("C:\\Notepad\\NotepadDB", exist_ok=True)
     path = "C:\\Windows\\Notepad.exe"
     fileLang = open('language.txt', 'r+')
     lang = fileLang.readline()
@@ -1099,6 +1096,7 @@ def realtime_notepad():
         language = "hindi"
     elif 'gujarati' in lang:
         language = "gujarati"
+
     iris_says.set("Sir I am ready to write")
     window.update()
     speak("Sir I am ready to write")
@@ -1107,6 +1105,7 @@ def realtime_notepad():
     speak("Please tell me what I should write")
     os.startfile(path)
     time.sleep(0.25)
+
     while True:
         if language.__eq__("english"):
             write = take_normal()
@@ -1121,7 +1120,7 @@ def realtime_notepad():
             window.update()
             speak("Please check the path in window")
             pyautogui.hotkey('ctrlleft', 's')
-            time.sleep(2)
+            time.sleep(2.5)
             iris_says.set("Speak the name of file: ")
             window.update()
             speak("Speak the name of file: ")
@@ -1209,11 +1208,11 @@ def rps_game():
 
 def assistant_in_english():
     """Starts IRIS in english"""
-    wish_me()
 
     while True:
         query = take_cmd()
         # Logic for executing tasks based on user query
+
         if 'search on google' in query:
             search_on_google()
 
@@ -1310,10 +1309,10 @@ def assistant_in_english():
 
 def assistant_in_hindi():
     """Starts IRIS in hindi"""
-    wish_me()
 
     while True:
         query = take_hin()
+
         # Logic for executing tasks based on user query
         if 'गूगल पर खोजिए' in query:
             search_on_google()
@@ -1408,11 +1407,11 @@ def assistant_in_hindi():
 
 def assistant_in_gujarati():
     """Starts IRIS in hindi"""
-    wish_me()
 
     while True:
         query = take_guj()
         # Logic for executing tasks based on user query
+
         if 'ગૂગલ કરો' in query or 'google કરો' in query:
             search_on_google()
 
