@@ -35,7 +35,7 @@ win32gui.ShowWindow(hide, win32con.SW_HIDE)
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[0].id)
+engine.setProperty('voice', voices[1].id)
 engine.setProperty('rate', 180)
 
 
@@ -1211,7 +1211,8 @@ def rps_game():
 
 def assistant_in_english():
     """Starts IRIS in english"""
-
+    wish_me()
+    
     while True:
         query = take_cmd()
         # Logic for executing tasks based on user query
@@ -1312,7 +1313,8 @@ def assistant_in_english():
 
 def assistant_in_hindi():
     """Starts IRIS in hindi"""
-
+    wish_me()
+    
     while True:
         query = take_hin()
 
@@ -1410,7 +1412,8 @@ def assistant_in_hindi():
 
 def assistant_in_gujarati():
     """Starts IRIS in hindi"""
-
+    wish_me()
+    
     while True:
         query = take_guj()
         # Logic for executing tasks based on user query
