@@ -38,11 +38,11 @@ iii. Now simply run the IRIS.py file
 
 _Python_ - Python is Interpreted high level programming language used for powerful projects our main goal was code readability with indentation.
 
-_SQL_ - SQL is used for storing data in database, we used SQLite3 for storing contacts and emails.
+_SQL_ - SQL is used for storing data in database, we used SQLite3 for storing contacts.
 
 ## Scope of Project
 
-The main goal of IRIS is to automize user’s work by his/her voice commands. This software will provide hands-free experience of internet related things to user. User can also write with his voice in Notepad. Curently it supports 3 languages: _English_, _Hindi_ and _Gujarati_.
+The main goal of IRIS is to automize user’s work by thier voice commands. This software will provide hands-free experience of internet related things to user. Curently it supports 3 languages: _English_, _Hindi_ and _Gujarati_.
 
 ## Future Enhancements
 
