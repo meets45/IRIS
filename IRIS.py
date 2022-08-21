@@ -7,16 +7,11 @@ import os
 import random
 import json
 import requests
-import smtplib
 import pyautogui
 import time
 import sys
 from pynput.keyboard import Controller as key_ctrl
 import pywhatkit
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.base import MIMEBase
-from email import encoders
 import PyPDF2
 import sqlite3
 import operator
@@ -28,10 +23,11 @@ from pywikihow import search_wikihow
 import pyjokes
 from tkinter import *
 from tkinter import filedialog
-import win32gui, win32con
 
-hide = win32gui.GetForegroundWindow()
-win32gui.ShowWindow(hide, win32con.SW_HIDE)
+# import win32gui, win32con
+# For hiding GUI window
+# hide = win32gui.GetForegroundWindow()
+# win32gui.ShowWindow(hide, win32con.SW_HIDE)
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
@@ -49,11 +45,9 @@ window.resizable(False, False)
 # global iris_says
 iris_says = StringVar()
 
-photo = PhotoImage(file="IRIS_LOGO_FR.PNG")
+photo = PhotoImage(file="IrisLogo.png")
 window.iconphoto(False, photo)
 
-global db_email
-db_email = False
 global db_phone
 db_phone = False
 search_box_variable = StringVar()
@@ -342,16 +336,6 @@ def translate_guj():
     speak(f"The translation is {text_hin}")
 
 
-def send_email(to, mail):
-    """This function is used to send email to user"""
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.ehlo()
-    server.starttls()
-    server.login('Your Email', 'Your Password')
-    server.sendmail('iristheaidemo@gmail.com', to, mail)
-    server.close()
-
-
 def iris_starter():
     """Checks if user has selected a language and starts IRIS in that language accordingly"""
     try:
@@ -374,44 +358,6 @@ def iris_starter():
 
     except Exception as e5:
         print(e5)
-
-
-def select_email(searched_mail):
-    """
-    This function selects name of user to send email from its argument searched_mail
-    and checks if user is available in database
-    :return:
-    """
-
-    cursor = conn1.cursor()
-    cursor.execute("SELECT * FROM email WHERE name=? ", (searched_mail,))
-    rows = cursor.fetchall()
-
-    try:
-        for row in rows:
-            required_mail = row[1]
-            return required_mail
-
-    except:
-        label_setter(f"No contact for username {searched_mail} found")
-
-
-def select_email_name(searched_mail):
-    """
-    This function selects email address from its argument searched_mail, which is name of user to send email
-    :return:
-    """
-    cursor = conn1.cursor()
-    cursor.execute("SELECT * FROM email WHERE name=? ", (searched_mail,))
-    rows = cursor.fetchall()
-
-    try:
-        for row in rows:
-            required_mail_name = row[0]
-            return required_mail_name
-
-    except:
-        label_setter(f"No contact for username {searched_mail} found")
 
 
 def select_phone_number_name(searched_phone_number):
@@ -452,31 +398,6 @@ def select_phone_number(searched_phone_number):
         label_setter(f"No contact for user {searched_phone_number} found")
 
 
-def create_and_update_email_database(s_name, s_email):
-    """
-    This function creates email database table if not exist
-    or if email table exists it inserts data from user choice
-    :return:
-    """
-    try:
-        global db_email
-        cursor1 = conn1.cursor()
-        cursor1.execute("CREATE TABLE IF NOT EXISTS email(name char(30) primary key,email char(30));")
-        cursor1.execute("""
-        INSERT INTO email(name,email)
-        VALUES (?,?)
-        """, (s_name.lower(), s_email))
-
-        conn1.commit()
-        db_email = True
-
-    except:
-        db_email = False
-        iris_says.set("User name already exists")
-        window.update()
-        speak("User name already exists")
-
-
 def create_and_update_phone_number_database(val1, val2):
     """
      This function creates PhoneNumber database table if not exist
@@ -503,15 +424,6 @@ def create_and_update_phone_number_database(val1, val2):
         iris_says.set("User name already exists")
         window.update()
         speak("User name already exists")
-
-
-def display_all_mail():
-    """Displays all emails/ For development use"""
-    cursor = conn1.cursor()
-    cursor.execute("SELECT * FROM email  ")
-    rows = cursor.fetchall()
-    for row in rows:
-        print(row)
 
 
 def display_all_number():
@@ -643,97 +555,6 @@ def current_time():
     iris_says.set(f"The current time is {curr_time}")
     window.update()
     speak(f"The current time is {curr_time}")
-
-
-def email_with_file():
-    """Used to send Email with file"""
-    iris_says.set("What is the subject for this email?")
-    window.update()
-    speak("What is the subject for this email?")
-    iris_says.set("What is the message for this mail?")
-    window.update()
-    subject = take_normal()
-    speak("What is the message for this mail?")
-    iris_says.set("Whom do you want to send email?")
-    window.update()
-    mail = take_normal()
-    speak("Whom do you want to send email?")
-    name = take_cmd()
-    iris_says.set("Sir, please enter correct path of the file")
-    window.update()
-    speak("Sir, please enter correct path of the file")
-    file = filedialog.askopenfilename()
-    selected_email = select_email(name)
-    selected_email_name = select_email_name(name)
-    if name in selected_email_name:
-        to = selected_email
-        message = MIMEMultipart()
-        message['From'] = 'iristheaidemo@gmail.com'
-        message['To'] = to
-        message['Subject'] = subject
-        message.attach(MIMEText(mail, 'plain'))
-        filename = os.path.basename(file)
-        attach_file = open(file, "rb")
-        part = MIMEBase('application', 'octet-stream')
-        part.set_payload(attach_file.read())
-        encoders.encode_base64(part)
-        part.add_header('Content-Disposition', "attachment; filename = %s" % filename)
-        message.attach(part)
-
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.ehlo()
-        server.starttls()
-        server.login('iristheaidemo@gmail.com', 'iris@theai')
-        text = message.as_string()
-        server.sendmail('iristheaidemo@gmail.com', to, text)
-        server.close()
-        iris_says.set("Your email has been sent")
-        window.update()
-        speak("Your email has been sent")
-    else:
-        label_setter("Person is not in your email database, please update your database")
-        window.update()
-        speak("Person is not in your email database, please update your database")
-
-
-def sendmail(mail):
-    """Used to send Email to desired user"""
-    iris_says.set("Whom do you want to send email")
-    window.update()
-    speak("Whom do you want to send email")
-    name = take_cmd()
-    selected_email = select_email(name)
-    selected_email_name = select_email_name(name)
-    if name in selected_email_name:
-        to = selected_email
-        send_email(to, mail)
-        iris_says.set("Your email has been delivered")
-        window.update()
-        speak("Your email has been delivered")
-    else:
-        iris_says.set("Person is not in your contact list, please update your contact list")
-        window.update()
-        speak("Person is not in your contact list, please update your contact list")
-
-
-def mail():
-    """Used to send Email to user, has 2 modes: 1. Without file 2. With file"""
-    try:
-        iris_says.set("what should I say?")
-        window.update()
-        speak("what should I say?")
-        mail = take_cmd()
-        if 'file bhejiye' in mail or 'send file' in mail or 'send a file' in mail:
-            email_with_file()
-
-        else:
-            sendmail(mail)
-
-    except Exception as e2:
-        print(e2)
-        iris_says.set("I am not able to send e-mail at the moment")
-        window.update()
-        speak("I am not able to send e-mail at the moment")
 
 
 def switch_win():
@@ -1232,9 +1053,6 @@ def assistant_in_english():
         elif 'current time' in query or 'time' in query:
             current_time()
 
-        elif 'send email' in query:
-            mail()
-
         elif 'switch window' in query:
             switch_win()
 
@@ -1334,9 +1152,6 @@ def assistant_in_hindi():
         elif 'टाइम बताए' in query or 'टाइम' in query:
             current_time()
 
-        elif 'ईमेल भेजिए' in query:
-            mail()
-
         elif 'विंडो बदलिए' in query:
             switch_win()
 
@@ -1432,9 +1247,6 @@ def assistant_in_gujarati():
 
         elif 'સમય' in query:
             current_time()
-
-        elif 'મેઇલ મોકલો' in query:
-            mail()
 
         elif 'વિન્ડો બદલો' in query:
             switch_win()
@@ -1575,9 +1387,6 @@ def update_suggestion_arg(suggest):
     elif 'time' in suggest or 'current' in suggest or 'clock' in suggest:
         suggestion_variable = "Current Time or Time"
         return suggestion_variable
-    elif 'email' in suggest or 'mai' in suggest:
-        suggestion_variable = "Send E-Mail"
-        return suggestion_variable
     elif 'window' in suggest or 'switch' in suggest:
         suggestion_variable = "Switch Window"
         return suggestion_variable
@@ -1652,60 +1461,6 @@ def update_suggestion_arg(suggest):
         return suggestion_variable
 
 
-def update_email_db():
-    """UI function to implement update_email database function"""
-    update_email = Tk()
-    update_email.resizable(False, False)
-    update_email.title("Update Email Database")
-    update_email.geometry("625x300")
-    update_email.config(bg="#474b47")
-    email_name = StringVar()
-    email_address = StringVar()
-
-    def email_print():
-        s1 = entry_email_name.get().lower()
-        s2 = entry_email_address.get()
-        global db_email
-        if len(s2) > 1 and len(s1) > 1:
-            create_and_update_email_database(s1, s2)
-            if db_email:
-                pop2.config(fg="#00ff00", bg="#474b47")
-                pop2.config(text="Email Entered Successfully!")
-                update_email.update()
-                window.update()
-            else:
-                pop2.config(fg="#ff0000", bg="#474b47")
-                pop2.config(text="User with same name already exists !")
-                window.update()
-        else:
-            pop2.config(fg="#ff0000", bg="#474b47")
-            pop2.config(text="Fields cannot be empty!")
-            window.update()
-
-    pop2 = Label(update_email, bg="#474b47")
-    pop2.pack()
-
-    ue_lab1 = Label(update_email, text="Enter name here", bg="#f3f9a7")
-    ue_lab1.pack()
-    pop3 = Label(update_email, bg="#474b47")
-    pop3.pack()
-    entry_email_name = Entry(update_email, textvar=email_name)
-    entry_email_name.pack()
-    pop4 = Label(update_email, bg="#474b47")
-    pop4.pack()
-    un_label = Label(update_email, text="Enter E-Mail Address Here", bg="#f3f9a7")
-    un_label.pack()
-    pop5 = Label(update_email, bg="#474b47")
-    pop5.pack()
-    entry_email_address = Entry(update_email, textvar=email_address)
-    entry_email_address.pack()
-    pop6 = Label(update_email, bg="#474b47")
-    pop6.pack()
-    button_submit = Button(update_email, text="SUBMIT", command=email_print)
-    button_submit.pack()
-    update_email.mainloop()
-
-
 def update_phone_number_db():
     """UI function to implement update_phone_number_db function"""
     update_phone_number_db = Tk()
@@ -1776,11 +1531,9 @@ def update_all_database():
     all_db.title("UPDATE DATABASE")
     all_db.geometry("525x500")
     all_db.config(bg="#474b47")
-    all_db_button1 = Button(all_db, text="UPDATE EMAIL", command=update_email_db, bg="#f3f9a7",
-                            font=("Brandon Grotesque", 12)).place(x=185, y=215)
-    all_db_button2 = Button(all_db, text="UPDATE PHONE NUMBER ", command=update_phone_number_db, bg="#f3f9a7",
+    Button(all_db, text="UPDATE PHONE NUMBER ", command=update_phone_number_db, bg="#f3f9a7",
                             font=("Brandon Grotesque", 12)).place(x=135, y=280)
-    all_db_label1 = Label(all_db, text="\nSELECT DATABASE TO BE UPDATED\n", bg="#474b47", fg="#ffffff",
+    Label(all_db, text="\nSELECT DATABASE TO BE UPDATED\n", bg="#474b47", fg="#ffffff",
                           font=("comic sans ms", 15)).place(x=37, y=100)
 
     all_db.mainloop()
@@ -1805,8 +1558,6 @@ iris_task_desc = ["-to open new instance",
                   "national news",
                   "-to get current date &",
                   "time of your system",
-                  "-to send email from",
-                  "your contacts",
                   "-to switch current",
                   "window",
                   "-to open the command",
@@ -1856,7 +1607,6 @@ iris_task_list = ["Open Notepad",
                   "Play Music",
                   "News",
                   "Current Time or Time",
-                  "Send E-Mail",
                   "Switch Window",
                   "Open Command Prompt",
                   "Send WhatsApp Message",
