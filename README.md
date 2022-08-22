@@ -1,19 +1,19 @@
 # IRIS
 
-IRIS means Intelligent and Robust Informaive System.
+IRIS stands for Intelligent and Robust Informaive System.
 It was created by Meet Shah(_meets45_) and Yagnik Fadadu(_Yagnikfadadu_) as final year project in Diploma Engineering. 
 
 ## Features
 1. Type in notepad(realtime) through voice.
 
-2. Send WhatsApp message to your contacts through voice commands.
+2. Sending WhatsApp message to your contacts through voice commands.
 
 3. Vocal Calculator
 
 4. Switch window, know battery percentage or take screenshot through voice and many more features...
 
 ## How to use IRIS
-i. For using IRIS clone the repository or download the Zip file and extract the contents.
+i. For using IRIS clone the repository or download the ZIP file and extract the contents.
 
 ii. Install the following packages by using this commands
 ```python
