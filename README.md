@@ -1,7 +1,7 @@
 # IRIS
 
 IRIS stands for Intelligent and Robust Information System.
-It was created by Meet Shah(_meets45_) and Yagnik Fadadu(_Yagnikfadadu_) as final year project in Diploma Engineering. 
+It was developed by Meet Shah(_meets45_) and Yagnik Fadadu(_Yagnikfadadu_) as final year project in Diploma Engineering. 
 
 ## How to use IRIS
 
